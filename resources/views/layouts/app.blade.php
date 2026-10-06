@@ -131,7 +131,7 @@
                 <p class="font-bold text-white mb-3">Bantuan Cepat</p>
                 <ul class="space-y-2">
                     <li><a href="/ppdb#faq" class="hover:underline">FAQ PPDB</a></li>
-                    <li><a href="/e-learning#panduan" class="hover:underline">Panduan E-Learning</a></li>
+                    <li><a href="/e-learning#panduan-siswa" class="hover:underline">Panduan E-Learning</a></li>
                     <li><a href="#" class="hover:underline">Unduh Brosur PPDB (PDF)</a></li>
                     <li><a href="#" class="hover:underline">Hubungi Panitia via WA</a></li>
                 </ul>

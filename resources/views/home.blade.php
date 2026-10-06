@@ -41,7 +41,7 @@
             <p class="mt-3 text-slate-600 text-sm sm:text-base leading-relaxed">Saya <b>Rm. Thomas Bintang, S.Pd.</b> — Setiap anak punya cahaya. Tugas kami menjaganya tetap menyala: lewat disiplin yang hangat, pembelajaran bermakna, dan komunitas yang peduli. Mari bertumbuh bersama kami.</p>
             <div class="mt-4 flex flex-wrap gap-3">
                 <a href="/profil" class="px-5 py-2.5 bg-slate-900 text-white text-sm font-semibold rounded-xl">Baca Profil Lengkap →</a>
-                <a href="/ppdb" class="px-5 py-2.5 border text-sm font-semibold rounded-xl">Tanya PPDB via WA</a>
+                <a href="https://wa.me/6281234567890?text=Halo%20Panitia%20PPDB%20SMA%20Santo%20Paulus,%20saya%20ingin%20bertanya." class="px-5 py-2.5 border text-sm font-semibold rounded-xl">Tanya PPDB via WA</a>
             </div>
         </div>
     </div>
