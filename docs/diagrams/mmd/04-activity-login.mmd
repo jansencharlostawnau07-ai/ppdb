@@ -1,0 +1,13 @@
+﻿flowchart TD
+    A([Buka /login/siswa]) --> B[Isi NIS + password]
+    B --> C{Klik Masuk}
+    C --> D{Valid?}
+    D -- Ya --> E[Simpan session user.role=siswa]
+    E --> F[Redirect /dashboard]
+    F --> G[Buka /e-learning]
+    G --> H{Session ada?}
+    H -- Ya --> I[Tampil panel SESI AKTIF + NIS]
+    I --> J[Lanjut ke Dashboard tanpa input ulang]
+    D -- Tidak --> K[Tampil error + contoh demo]
+    K --> B
+    H -- Tidak --> L[Tampil 2 kartu pilih peran]

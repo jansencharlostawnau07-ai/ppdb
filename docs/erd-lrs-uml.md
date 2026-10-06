@@ -228,23 +228,33 @@ Aktor = peran nyata di web. `Tamu` tidak butuh login;
 `Murid`/`Guru` login sekali di `/login/...` lalu sesi dipakai di `/dashboard` dan `/e-learning`.
 
 ```mermaid
-usecaseDiagram
-    actor Tamu
-    actor Murid
-    actor Guru
-    Tamu --> (Lihat Beranda & Profil)
-    Tamu --> (Lihat Info & Formulir PPDB)
-    Tamu --> (Pilih Peran Login)
-    Murid --> (Login NIS + Password)
-    Guru --> (Login NIP + Password + PIN)
-    Murid --> (Buka Dashboard Murid)
-    Guru --> (Buka Dashboard Guru)
-    Murid --> (Akses E-Learning tanpa login ulang)
-    Guru --> (Akses E-Learning tanpa login ulang)
-    Guru --> (Nilai Tugas & Kelola Bank Soal)
-    Murid --> (Kumpulkan Tugas & Ikut CBT)
-    Murid --> (Keluar / Ganti Akun)
-    Guru --> (Keluar / Ganti Akun)
+flowchart LR
+    Tamu((Tamu))
+    Murid((Murid))
+    Guru((Guru))
+    U1([Lihat Beranda dan Profil])
+    U2([Lihat Info dan Formulir PPDB])
+    U3([Pilih Peran Login])
+    U4([Login NIS + Password])
+    U5([Login NIP + Password + PIN])
+    U6([Buka Dashboard])
+    U7([Akses E-Learning tanpa login ulang])
+    U8([Nilai Tugas dan Kelola Bank Soal])
+    U9([Kumpulkan Tugas dan Ikut CBT])
+    U10([Keluar atau Ganti Akun])
+    Tamu --> U1
+    Tamu --> U2
+    Tamu --> U3
+    Murid --> U4
+    Guru --> U5
+    Murid --> U6
+    Guru --> U6
+    Murid --> U7
+    Guru --> U7
+    Guru --> U8
+    Murid --> U9
+    Murid --> U10
+    Guru --> U10
 ```
 
 ### 3.2 Activity Diagram — Login single-session (murid)

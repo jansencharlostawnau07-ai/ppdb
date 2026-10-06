@@ -1,0 +1,39 @@
+﻿classDiagram
+    class Siswa {
+        +string nis
+        +string nama
+        +string kelas
+        +mendaftar()
+        +kumpulkanTugas()
+    }
+    class Guru {
+        +string nip
+        +string mapel
+        +buatTugas()
+        +nilaiTugas()
+    }
+    class PendaftaranPpdb {
+        +string no_daftar
+        +string jalur
+        +string status
+        +verifikasiBerkas()
+    }
+    class Pembayaran {
+        +int nominal
+        +string status
+        +cicil()
+    }
+    class Tugas {
+        +string judul
+        +datetime deadline
+    }
+    class Pengumpulan {
+        +string file
+        +int nilai
+    }
+    Siswa "1" -- "0..*" PendaftaranPpdb : mendaftar
+    PendaftaranPpdb "1" -- "0..*" Pembayaran : ditagih
+    Guru "1" -- "0..*" Tugas : membuat
+    Siswa "1" -- "0..*" Pengumpulan : mengumpulkan
+    Tugas "1" -- "0..*" Pengumpulan : dikerjakan-dalam
+    Guru "1" -- "0..*" Pengumpulan : menilai

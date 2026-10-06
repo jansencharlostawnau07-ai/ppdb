@@ -1,0 +1,14 @@
+﻿sequenceDiagram
+    actor M as Murid
+    participant B as Browser
+    participant R as Routes (POST /login/siswa)
+    participant S as Session
+    participant E as GET /e-learning
+    M->>B: Isi NIS 20261001 + siswa123
+    B->>R: POST /login/siswa
+    R->>S: put(user: role=siswa, nis)
+    R-->>B: redirect /dashboard
+    B->>E: GET /e-learning (dengan cookie sesi)
+    E->>S: cek session user
+    S-->>E: role=siswa, nis=20261001
+    E-->>B: panel SESI AKTIF, tanpa form login

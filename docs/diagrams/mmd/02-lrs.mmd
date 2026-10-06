@@ -1,0 +1,25 @@
+﻿flowchart LR
+    subgraph INDUK["Tabel induk (PK)"]
+        S["siswa<br/>PK: nis"]
+        G["guru<br/>PK: nip"]
+        D["pendaftaran_ppdb<br/>PK: no_daftar"]
+        T["tugas<br/>PK: id"]
+    end
+    subgraph ANAK["Tabel anak (FK)"]
+        DF["pendaftaran_ppdb.nis â†’ siswa.nis"]
+        BK["berkas_ppdb.no_daftar â†’ pendaftaran_ppdb.no_daftar"]
+        BY["pembayaran.no_daftar â†’ pendaftaran_ppdb.no_daftar"]
+        MT["materi.nip â†’ guru.nip"]
+        TG["tugas.nip â†’ guru.nip"]
+        KV["kelas_virtual.nip â†’ guru.nip"]
+        PU1["pengumpulan.tugas_id â†’ tugas.id"]
+        PU2["pengumpulan.nis â†’ siswa.nis"]
+    end
+    S -.-> DF
+    D -.-> BK
+    D -.-> BY
+    G -.-> MT
+    G -.-> TG
+    G -.-> KV
+    T -.-> PU1
+    S -.-> PU2
