@@ -25,7 +25,7 @@ Route::get('/login/guru', function (Request $request) {
 Route::post('/login/siswa', function (Request $request) {
     $request->validate(['nis' => 'required', 'password' => 'required']);
     if ($request->nis === '20261001' && $request->password === 'siswa123') {
-        $request->session()->put('user', ['role' => 'siswa', 'name' => 'Bintang (Murid)', 'nis' => '20261001']);
+        $request->session()->put('user', ['role' => 'siswa', 'name' => 'Asep (Murid)', 'nis' => '20261001']);
         return redirect('/dashboard');
     }
     return back()->withErrors(['login' => 'NIS atau password salah. Coba demo: 20261001 / siswa123'])->withInput();
@@ -34,7 +34,7 @@ Route::post('/login/siswa', function (Request $request) {
 Route::post('/login/guru', function (Request $request) {
     $request->validate(['nip' => 'required', 'password' => 'required', 'pin' => 'required']);
     if ($request->nip === '19850101' && $request->password === 'guru123' && $request->pin === '1234') {
-        $request->session()->put('user', ['role' => 'guru', 'name' => 'Bpk. Bintang (Guru)', 'nip' => '19850101']);
+        $request->session()->put('user', ['role' => 'guru', 'name' => 'Bpk. Jansen (Guru)', 'nip' => '19850101']);
         return redirect('/dashboard');
     }
     return back()->withErrors(['login' => 'NIP / password / PIN salah. Coba demo: 19850101 / guru123 / 1234'])->withInput();
