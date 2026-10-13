@@ -11,10 +11,12 @@ class PpdbRegistration extends Model
         'nama_lengkap', 'nisn', 'nik', 'jenis_kelamin',
         'tempat_lahir', 'tanggal_lahir', 'agama',
         'alamat', 'no_hp', 'email',
-        'asal_sekolah', 'tahun_lulus', 'rata_rata_rapor',
+        'asal_sekolah', 'asal_smp_kategori',
         'nama_ayah', 'pekerjaan_ayah', 'nama_ibu', 'pekerjaan_ibu', 'no_hp_ortu',
-        'jalur', 'gelombang', 'status', 'catatan_admin',
-        'file_kk', 'file_akta', 'file_rapor', 'file_foto',
+        'jalur', 'gelombang', 'skema_bayar', 'status', 'catatan_admin',
+        'file_kk', 'file_akta', 'file_ktp_ortu', 'file_baptis',
+        'file_rapor_8_ganjil', 'file_rapor_8_genap',
+        'file_foto', 'file_bukti_transfer', 'nama_bank', 'nominal_transfer',
     ];
 
     protected $casts = [

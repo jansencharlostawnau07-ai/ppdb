@@ -36,23 +36,29 @@ class PpdbController extends Controller
             'no_hp' => 'required|string|max:20',
             'email' => 'nullable|email|max:100',
             'asal_sekolah' => 'required|string|max:100',
-            'tahun_lulus' => 'nullable|string|max:4',
-            'rata_rata_rapor' => 'nullable|numeric|min:0|max:100',
+            'asal_smp_kategori' => 'required|in:ypsb,suster,umum',
             'nama_ayah' => 'nullable|string|max:100',
             'pekerjaan_ayah' => 'nullable|string|max:50',
             'nama_ibu' => 'nullable|string|max:100',
             'pekerjaan_ibu' => 'nullable|string|max:50',
             'no_hp_ortu' => 'nullable|string|max:20',
             'jalur' => 'required|in:reguler,prestasi,afirmasi',
-            'gelombang' => 'required|in:1,2,3',
+            'gelombang' => 'required|in:1,2',
+            'skema_bayar' => 'required|in:lunas,angsuran',
+            'nominal_transfer' => 'nullable|numeric|min:0',
             'file_kk' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'file_akta' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'file_rapor' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'file_ktp_ortu' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'file_baptis' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'file_rapor_8_ganjil' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'file_rapor_8_genap' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'file_foto' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'file_bukti_transfer' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
         $data = $validated;
-        foreach (['file_kk', 'file_akta', 'file_rapor', 'file_foto'] as $field) {
+        $data['nama_bank'] = 'BNI-6617710032-YPSB-SMA-STO-PAULUS';
+        foreach (['file_kk', 'file_akta', 'file_ktp_ortu', 'file_baptis', 'file_rapor_8_ganjil', 'file_rapor_8_genap', 'file_foto', 'file_bukti_transfer'] as $field) {
             if ($request->hasFile($field)) {
                 $data[$field] = $request->file($field)->store('ppdb', 'public');
             }
@@ -75,6 +81,21 @@ class PpdbController extends Controller
     public function cekForm()
     {
         return view('ppdb.cek');
+    }
+
+    public function biaya()
+    {
+        return view('ppdb.biaya');
+    }
+
+    public function beasiswa()
+    {
+        return view('ppdb.beasiswa');
+    }
+
+    public function panduan()
+    {
+        return view('ppdb.panduan');
     }
 
     public function cek(Request $request)
