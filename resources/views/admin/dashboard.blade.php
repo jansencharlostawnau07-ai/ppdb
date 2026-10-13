@@ -3,7 +3,6 @@
 @section('content')
 <div class="flex items-center justify-between mb-4">
 <h1 class="font-bold text-blue-900 text-lg">Dashboard Admin PPDB</h1>
-<form method="POST" action="{{ route('admin.logout') }}">@csrf<button class="text-sm px-3 py-1 border rounded">Logout</button></form>
 </div>
 <div class="grid grid-cols-2 md:grid-cols-5 gap-2 mb-4 text-center text-sm">
 <div class="bg-white p-3 rounded shadow"><div class="font-bold text-lg">{{ $stats['total'] }}</div>Total</div>
