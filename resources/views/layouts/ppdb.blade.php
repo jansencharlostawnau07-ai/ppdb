@@ -45,8 +45,13 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
 <a href="{{ route('ppdb.panduan') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100">Panduan</a>
 <a href="{{ route('ppdb.biaya') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100">Biaya</a>
 <a href="{{ route('ppdb.beasiswa') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100">Beasiswa</a>
+@auth
+<a href="{{ route('admin.dashboard') }}" class="px-3 py-2 rounded-lg bg-green-100 text-green-800">Dashboard Admin</a>
+<form method="POST" action="{{ route('admin.logout') }}" class="inline">@csrf<button class="px-3 py-2 rounded-lg bg-red-100 text-red-700">Logout</button></form>
+@else
 <a href="{{ route('ppdb.daftar') }}" class="px-4 py-2 rounded-lg bg-navy-900 text-white hover:bg-navy-800 shadow">Daftar</a>
 <a href="{{ route('ppdb.cek.form') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100">Cek Status</a>
+@endauth
 </nav>
 </div>
 </header>
