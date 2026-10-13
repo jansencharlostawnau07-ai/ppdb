@@ -41,16 +41,16 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
 </div>
 </a>
 <nav class="flex items-center gap-1 text-sm font-semibold flex-wrap">
-<a href="{{ route('ppdb.home') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100">Beranda</a>
-<a href="{{ route('ppdb.panduan') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100">Panduan</a>
-<a href="{{ route('ppdb.biaya') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100">Biaya</a>
-<a href="{{ route('ppdb.beasiswa') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100">Beasiswa</a>
+<a href="{{ route('ppdb.home') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->routeIs('ppdb.home') ? 'bg-slate-200 underline underline-offset-4 decoration-amber-500 decoration-2' : '' }}">Beranda</a>
+<a href="{{ route('ppdb.panduan') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->routeIs('ppdb.panduan') ? 'bg-slate-200 underline underline-offset-4 decoration-amber-500 decoration-2' : '' }}">Panduan</a>
+<a href="{{ route('ppdb.biaya') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->routeIs('ppdb.biaya') ? 'bg-slate-200 underline underline-offset-4 decoration-amber-500 decoration-2' : '' }}">Biaya</a>
+<a href="{{ route('ppdb.beasiswa') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->routeIs('ppdb.beasiswa') ? 'bg-slate-200 underline underline-offset-4 decoration-amber-500 decoration-2' : '' }}">Beasiswa</a>
 @auth
-<a href="{{ route('admin.dashboard') }}" class="px-3 py-2 rounded-lg bg-green-100 text-green-800">Dashboard Admin</a>
+<a href="{{ route('admin.dashboard') }}" class="px-3 py-2 rounded-lg bg-green-100 text-green-800 {{ request()->routeIs('admin.*') ? 'underline underline-offset-4 decoration-green-600 decoration-2' : '' }}">Dashboard Admin</a>
 <form method="POST" action="{{ route('admin.logout') }}" class="inline">@csrf<button class="px-3 py-2 rounded-lg bg-red-100 text-red-700">Logout</button></form>
 @else
-<a href="{{ route('ppdb.daftar') }}" class="px-4 py-2 rounded-lg bg-navy-900 text-white hover:bg-navy-800 shadow">Daftar</a>
-<a href="{{ route('ppdb.cek.form') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100">Cek Status</a>
+<a href="{{ route('ppdb.daftar') }}" class="px-4 py-2 rounded-lg text-white shadow {{ request()->routeIs('ppdb.daftar','ppdb.store','ppdb.sukses') ? 'bg-amber-500' : 'bg-navy-900 hover:bg-navy-800' }}">Daftar</a>
+<a href="{{ route('ppdb.cek.form') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->routeIs('ppdb.cek.*') ? 'bg-slate-200 underline underline-offset-4 decoration-amber-500 decoration-2' : '' }}">Cek Status</a>
 @endauth
 </nav>
 </div>
