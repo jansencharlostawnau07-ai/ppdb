@@ -40,10 +40,9 @@
 <div class="bg-white rounded-2xl p-5 shadow card-hover border-t-4 border-purple-600"><div class="font-bold">4. Grup WA Ortu</div><div class="text-sm text-slate-600 mt-1">Info terkini dari sekolah via grup. Cek status via nomor + tgl lahir.</div></div>
 </div>
 <div class="grid md:grid-cols-2 gap-4 mt-4">
-<div class="rounded-2xl overflow-hidden shadow relative min-h-[260px] flex">
-<img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1200&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover" alt="Kegiatan">
-<div class="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-900/60 to-transparent"></div>
-<div class="relative p-5 text-white mt-auto text-sm"><div class="font-bold text-lg">Seragam & Fasilitas</div>Putih-Abu, Putih-Putih, Pramuka, Olahraga, Kaos Sabtu, Jas Almamater + 3 kaos kaki, dasi, cekak, kacu.</div>
+<div class="rounded-2xl overflow-hidden shadow bg-white">
+<img src="{{ asset('images/seragam.jpg') }}" class="w-full h-64 object-cover object-top" alt="Seragam SMA Santo Paulus">
+<div class="p-5 text-sm"><div class="font-bold text-lg text-navy-900">Seragam & Fasilitas</div><div class="text-slate-600">Putih-Abu, Putih-Putih, Pramuka, Olahraga, Kaos Sabtu, Jas Almamater + 3 kaos kaki, dasi, cekak, kacu.</div></div>
 </div>
 <div class="bg-white rounded-2xl p-5 shadow text-sm">
 <h2 class="font-extrabold text-navy-900 mb-2">Ringkasan Biaya 2027/2028</h2>
