@@ -9,8 +9,8 @@
 <div class="md:col-span-2 font-bold text-navy-900 border-b pb-1">Step 1 — Data Calon Siswa</div>
 <div><label class="font-semibold">Nama Lengkap *</label><input name="nama_lengkap" value="{{ old('nama_lengkap') }}" required class="w-full border rounded px-3 py-2"></div>
 <div class="grid grid-cols-2 gap-2">
-<div><label class="font-semibold">NISN</label><input name="nisn" value="{{ old('nisn') }}" class="w-full border rounded px-3 py-2"></div>
-<div><label class="font-semibold">NIK</label><input name="nik" value="{{ old('nik') }}" class="w-full border rounded px-3 py-2"></div>
+<div><label class="font-semibold">NISN (10 digit)</label><input name="nisn" id="nisn" value="{{ old('nisn') }}" inputmode="numeric" maxlength="10" placeholder="10 digit Dapodik" class="w-full border rounded px-3 py-2"><div id="nisn-count" class="text-[11px] text-slate-500 mt-0.5">0/10</div></div>
+<div><label class="font-semibold">NIK (16 digit)</label><input name="nik" id="nik" value="{{ old('nik') }}" inputmode="numeric" maxlength="16" placeholder="16 digit KK/KTP" class="w-full border rounded px-3 py-2"><div id="nik-count" class="text-[11px] text-slate-500 mt-0.5">0/16 • digit 7–12 = DDMMYY lahir</div></div>
 </div>
 <div><label class="font-semibold">Jenis Kelamin *</label><select name="jenis_kelamin" required class="w-full border rounded px-3 py-2"><option value="L" @selected(old('jenis_kelamin')=='L')>Laki-laki</option><option value="P" @selected(old('jenis_kelamin')=='P')>Perempuan</option></select></div>
 <div class="grid grid-cols-2 gap-2">
@@ -47,6 +47,20 @@
 <div><label class="font-semibold">Bukti Transfer (JPG/PDF)</label><input type="file" name="file_bukti_transfer" class="w-full border rounded px-3 py-2"></div>
 <p class="md:col-span-2 text-xs bg-amber-50 border rounded p-2">Non-Katolik wajib Surat Pernyataan (diunggah di kolom Baptis).</p>
 <div class="md:col-span-2 mt-2"><button class="px-6 py-2 bg-navy-900 text-white rounded-lg font-bold">Kirim Pendaftaran</button></div>
+<script>
+(function(){
+ function bind(id, out, max){
+  var el=document.getElementById(id), o=document.getElementById(out);
+  if(!el) return;
+  function upd(){
+   el.value=el.value.replace(/\D/g,'').slice(0,max);
+   if(o) o.textContent=el.value.length+'/'+max+(id==='nik'?' • digit 7–12 = DDMMYY lahir':'');
+  }
+  el.addEventListener('input', upd); upd();
+ }
+ bind('nisn','nisn-count',10); bind('nik','nik-count',16);
+})();
+</script>
 </form>
 </div>
 @endsection

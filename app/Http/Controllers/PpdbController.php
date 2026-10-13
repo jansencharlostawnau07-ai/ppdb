@@ -30,8 +30,33 @@ class PpdbController extends Controller
     {
         $validated = $request->validate([
             'nama_lengkap' => 'required|string|max:100',
-            'nisn' => 'nullable|string|max:20',
-            'nik' => 'nullable|string|max:25',
+            'nisn' => 'nullable|digits:10',
+            'nik' => [
+                'nullable',
+                'digits:16',
+                function ($attribute, $value, $fail) use ($request) {
+                    $tgl = $request->input('tanggal_lahir');
+                    if (! $value || ! $tgl) {
+                        return;
+                    }
+                    try {
+                        $date = \Carbon\Carbon::parse($tgl);
+                    } catch (\Exception $e) {
+                        return;
+                    }
+                    $day = (int) substr($value, 6, 2);
+                    if ($day > 40) {
+                        $day -= 40;
+                    }
+                    $month = (int) substr($value, 8, 2);
+                    $yy = substr($value, 10, 2);
+                    if ($day !== (int) $date->format('d')
+                        || $month !== (int) $date->format('m')
+                        || $yy !== $date->format('y')) {
+                        $fail('Tanggal lahir di NIK tidak cocok dengan Tanggal Lahir (digit 7–12 NIK = DDMMYY).');
+                    }
+                },
+            ],
             'jenis_kelamin' => 'required|in:L,P',
             'tempat_lahir' => 'nullable|string|max:50',
             'tanggal_lahir' => 'required|date|before:today',
