@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\PpdbRegistration;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class PpdbController extends Controller
 {
@@ -14,6 +17,7 @@ class PpdbController extends Controller
             'diterima' => PpdbRegistration::where('status', 'diterima')->count(),
             'pending' => PpdbRegistration::where('status', 'pending')->count(),
         ];
+
         return view('ppdb.home', compact('stats'));
     }
 
@@ -30,10 +34,10 @@ class PpdbController extends Controller
             'nik' => 'nullable|string|max:25',
             'jenis_kelamin' => 'required|in:L,P',
             'tempat_lahir' => 'nullable|string|max:50',
-            'tanggal_lahir' => 'required|date',
+            'tanggal_lahir' => 'required|date|before:today',
             'agama' => 'nullable|string|max:30',
-            'alamat' => 'required|string',
-            'no_hp' => 'required|string|max:20',
+            'alamat' => 'required|string|max:2000',
+            'no_hp' => ['required', 'string', 'max:20', 'regex:/^[0-9+\-\s]{9,20}$/'],
             'email' => 'nullable|email|max:100',
             'asal_sekolah' => 'required|string|max:100',
             'asal_smp_kategori' => 'required|in:ypsb,suster,umum',
@@ -41,11 +45,11 @@ class PpdbController extends Controller
             'pekerjaan_ayah' => 'nullable|string|max:50',
             'nama_ibu' => 'nullable|string|max:100',
             'pekerjaan_ibu' => 'nullable|string|max:50',
-            'no_hp_ortu' => 'nullable|string|max:20',
+            'no_hp_ortu' => ['nullable', 'string', 'max:20', 'regex:/^[0-9+\-\s]{9,20}$/'],
             'jalur' => 'required|in:reguler,prestasi,afirmasi',
             'gelombang' => 'required|in:1,2',
             'skema_bayar' => 'required|in:lunas,angsuran',
-            'nominal_transfer' => 'nullable|numeric|min:0',
+            'nominal_transfer' => 'nullable|numeric|min:0|max:999999999',
             'file_kk' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'file_akta' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'file_ktp_ortu' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
@@ -64,17 +68,39 @@ class PpdbController extends Controller
             }
         }
 
-        $data['no_pendaftaran'] = PpdbRegistration::generateNoPendaftaran();
         $data['status'] = 'pending';
 
-        $pendaftaran = PpdbRegistration::create($data);
+        $pendaftaran = DB::transaction(function () use ($data) {
+            $attempt = 0;
+            while (true) {
+                $attempt++;
+                try {
+                    return PpdbRegistration::create(
+                        $data + ['no_pendaftaran' => PpdbRegistration::generateNoPendaftaran()]
+                    );
+                } catch (QueryException $e) {
+                    if ($attempt >= 5 || ! str_contains($e->getMessage(), 'ppdb_registrations.no_pendaftaran')) {
+                        throw $e;
+                    }
+                    usleep(50000 * $attempt);
+                }
+            }
+        });
+
+        $request->session()->put('ppdb_last_no', $pendaftaran->no_pendaftaran);
 
         return redirect()->route('ppdb.sukses', $pendaftaran->no_pendaftaran);
     }
 
-    public function sukses(string $no)
+    public function sukses(Request $request, string $no)
     {
         $pendaftaran = PpdbRegistration::where('no_pendaftaran', $no)->firstOrFail();
+
+        if ($request->session()->get('ppdb_last_no') !== $no && ! Auth::check()) {
+            return redirect()->route('ppdb.cek.form')
+                ->withErrors(['no_pendaftaran' => 'Gunakan Cek Status dengan nomor + tanggal lahir untuk melihat data ini.']);
+        }
+
         return view('ppdb.sukses', compact('pendaftaran'));
     }
 
@@ -101,8 +127,8 @@ class PpdbController extends Controller
     public function cek(Request $request)
     {
         $request->validate([
-            'no_pendaftaran' => 'required|string',
-            'tanggal_lahir' => 'required|date',
+            'no_pendaftaran' => 'required|string|max:30',
+            'tanggal_lahir' => 'required|date|before:today',
         ]);
 
         $pendaftaran = PpdbRegistration::where('no_pendaftaran', $request->no_pendaftaran)

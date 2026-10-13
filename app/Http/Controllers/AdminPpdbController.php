@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PpdbRegistration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class AdminPpdbController extends Controller
 {
@@ -13,18 +14,20 @@ class AdminPpdbController extends Controller
         if (Auth::check()) {
             return redirect()->route('admin.dashboard');
         }
+
         return view('admin.login');
     }
 
     public function login(Request $request)
     {
         $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
+            'email' => 'required|email|max:255',
+            'password' => 'required|string|max:255',
         ]);
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
+
             return redirect()->intended(route('admin.dashboard'));
         }
 
@@ -36,24 +39,32 @@ class AdminPpdbController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect()->route('ppdb.home');
     }
 
     public function dashboard(Request $request)
     {
+        $filters = $request->validate([
+            'status' => 'nullable|in:pending,diverifikasi,diterima,ditolak',
+            'jalur' => 'nullable|in:reguler,prestasi,afirmasi',
+            'q' => 'nullable|string|max:100',
+        ]);
+
         $query = PpdbRegistration::query();
 
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        if (! empty($filters['status'])) {
+            $query->where('status', $filters['status']);
         }
-        if ($request->filled('jalur')) {
-            $query->where('jalur', $request->jalur);
+        if (! empty($filters['jalur'])) {
+            $query->where('jalur', $filters['jalur']);
         }
-        if ($request->filled('q')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('nama_lengkap', 'like', '%'.$request->q.'%')
-                  ->orWhere('no_pendaftaran', 'like', '%'.$request->q.'%')
-                  ->orWhere('asal_sekolah', 'like', '%'.$request->q.'%');
+        if (! empty($filters['q'])) {
+            $search = $filters['q'];
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_lengkap', 'like', '%'.$search.'%')
+                    ->orWhere('no_pendaftaran', 'like', '%'.$search.'%')
+                    ->orWhere('asal_sekolah', 'like', '%'.$search.'%');
             });
         }
 
@@ -78,7 +89,7 @@ class AdminPpdbController extends Controller
     {
         $validated = $request->validate([
             'status' => 'required|in:pending,diverifikasi,diterima,ditolak',
-            'catatan_admin' => 'nullable|string',
+            'catatan_admin' => 'nullable|string|max:2000',
         ]);
 
         $pendaftar->update($validated);
@@ -88,7 +99,23 @@ class AdminPpdbController extends Controller
 
     public function destroy(PpdbRegistration $pendaftar)
     {
+        $files = array_filter([
+            $pendaftar->file_kk,
+            $pendaftar->file_akta,
+            $pendaftar->file_ktp_ortu,
+            $pendaftar->file_baptis,
+            $pendaftar->file_rapor_8_ganjil,
+            $pendaftar->file_rapor_8_genap,
+            $pendaftar->file_foto,
+            $pendaftar->file_bukti_transfer,
+        ]);
+
         $pendaftar->delete();
-        return redirect()->route('admin.dashboard')->with('success', 'Data dihapus.');
+
+        if ($files !== []) {
+            Storage::disk('public')->delete($files);
+        }
+
+        return redirect()->route('admin.dashboard')->with('success', 'Data dan berkas dihapus.');
     }
 }
