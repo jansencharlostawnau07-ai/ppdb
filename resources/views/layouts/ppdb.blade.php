@@ -34,7 +34,7 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
 <header class="bg-white/95 backdrop-blur sticky top-0 z-20 shadow-sm">
 <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
 <a href="{{ route('ppdb.home') }}" class="flex items-center gap-3">
-<div class="w-11 h-11 rounded-xl bg-navy-900 text-gold-400 flex items-center justify-center font-extrabold text-lg shadow">SP</div>
+<img src="{{ asset('images/logo-sekolah.png') }}" alt="Logo SMA Santo Paulus" class="w-11 h-11 rounded-xl bg-white object-contain shadow p-1">
 <div>
 <div class="font-extrabold text-navy-900 leading-tight">SMA Santo Paulus Pontianak</div>
 <div class="text-[11px] tracking-widest uppercase text-amber-600 font-bold">SPMB 2027/2028</div>
