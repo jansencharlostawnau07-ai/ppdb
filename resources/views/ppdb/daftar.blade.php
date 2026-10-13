@@ -3,7 +3,7 @@
 @section('content')
 <div class="bg-white p-6 rounded-2xl shadow">
 <h1 class="text-lg font-extrabold text-navy-900 mb-1">Formulir SPMB 2027/2028 (4 Step)</h1>
-<p class="text-xs text-slate-500 mb-4">Step 1 Data Siswa • Step 2 Data Ortu • Step 3 Upload • Step 4 Bukti Transfer BNI 6617710032</p>
+<p class="text-xs text-slate-500 mb-4">Step 1 Data Siswa • Step 2 Data Ortu • Step 3 Upload • Step 4 Bukti Transfer (nomor di Step 4)</p>
 <form method="POST" action="{{ route('ppdb.store') }}" enctype="multipart/form-data" class="grid md:grid-cols-2 gap-4 text-sm">
 @csrf
 <div class="md:col-span-2 font-bold text-navy-900 border-b pb-1">Step 1 — Data Calon Siswa</div>
@@ -46,7 +46,7 @@
 <p class="md:col-span-2 text-xs bg-blue-50 border border-blue-200 rounded p-2">Transfer ke <b>BNI 6617710032 a.n. YPSB SMA STO PAULUS</b>. Pastikan nama penerima benar, lalu unggah bukti + isi nominal. Konfirmasi ke WA resmi panitia.</p>
 <div><label class="font-semibold">Nominal Transfer (Rp)</label><input type="number" name="nominal_transfer" value="{{ old('nominal_transfer') }}" class="w-full border rounded px-3 py-2"></div>
 <div><label class="font-semibold">Bukti Transfer (JPG/PDF)</label><input type="file" name="file_bukti_transfer" class="w-full border rounded px-3 py-2"></div>
-<p class="md:col-span-2 text-xs bg-amber-50 border rounded p-2">Rekening: BNI 6617710032 a.n. YPSB SMA STO PAULUS. Non-Katolik wajib Surat Pernyataan (diunggah di kolom Baptis).</p>
+<p class="md:col-span-2 text-xs bg-amber-50 border rounded p-2">Non-Katolik wajib Surat Pernyataan (diunggah di kolom Baptis).</p>
 <div class="md:col-span-2 mt-2"><button class="px-6 py-2 bg-navy-900 text-white rounded-lg font-bold">Kirim Pendaftaran</button></div>
 </form>
 </div>
