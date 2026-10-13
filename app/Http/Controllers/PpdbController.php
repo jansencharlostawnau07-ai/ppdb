@@ -49,7 +49,6 @@ class PpdbController extends Controller
             'jalur' => 'required|in:reguler,prestasi,afirmasi',
             'gelombang' => 'required|in:1,2',
             'skema_bayar' => 'required|in:lunas,angsuran',
-            'nominal_transfer' => 'nullable|numeric|min:0|max:999999999',
             'file_kk' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'file_akta' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'file_ktp_ortu' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',

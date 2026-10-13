@@ -9,7 +9,7 @@
 <div>JK: {{ $pendaftar->jenis_kelamin }}</div><div>Lahir: {{ $pendaftar->tempat_lahir }} {{ $pendaftar->tanggal_lahir?->format('d-m-Y') }}</div>
 <div>Agama: {{ $pendaftar->agama ?? '-' }}</div><div>HP: {{ $pendaftar->no_hp }}</div>
 <div class="md:col-span-2">Alamat: {{ $pendaftar->alamat }}</div>
-<div>Asal Sekolah: {{ $pendaftar->asal_sekolah }} [{{ $pendaftar->asal_smp_kategori }}]</div><div>Skema: {{ $pendaftar->skema_bayar }} • Transfer: Rp{{ number_format($pendaftar->nominal_transfer ?? 0,0,',','.') }}</div>
+<div>Asal Sekolah: {{ $pendaftar->asal_sekolah }} [{{ $pendaftar->asal_smp_kategori }}]</div><div>Skema: {{ $pendaftar->skema_bayar }}</div>
 <div>Ayah: {{ $pendaftar->nama_ayah }} ({{ $pendaftar->pekerjaan_ayah }})</div><div>Ibu: {{ $pendaftar->nama_ibu }} ({{ $pendaftar->pekerjaan_ibu }})</div>
 <div>Jalur/Gelombang: {{ $pendaftar->jalur }}/{{ $pendaftar->gelombang }}</div><div>Bank: {{ $pendaftar->nama_bank }}</div>
 </div>

@@ -16,7 +16,7 @@ class PpdbRegistration extends Model
         'jalur', 'gelombang', 'skema_bayar', 'status', 'catatan_admin',
         'file_kk', 'file_akta', 'file_ktp_ortu', 'file_baptis',
         'file_rapor_8_ganjil', 'file_rapor_8_genap',
-        'file_foto', 'file_bukti_transfer', 'nama_bank', 'nominal_transfer',
+        'file_foto', 'file_bukti_transfer', 'nama_bank',
     ];
 
     protected $casts = [

@@ -44,7 +44,6 @@
 <div><label class="font-semibold">Pasfoto 3x4 (JPG/PNG)</label><input type="file" name="file_foto" class="w-full border rounded px-3 py-2"></div>
 <div class="md:col-span-2 font-bold text-navy-900 border-b pb-1 mt-2">Step 4 — Bukti Pembayaran</div>
 <p class="md:col-span-2 text-xs bg-blue-50 border border-blue-200 rounded p-2">Transfer ke <b>BNI 6617710032 a.n. YPSB SMA STO PAULUS</b>. Pastikan nama penerima benar, lalu unggah bukti + isi nominal. Konfirmasi ke WA resmi panitia.</p>
-<div><label class="font-semibold">Nominal Transfer (Rp)</label><input type="number" name="nominal_transfer" value="{{ old('nominal_transfer') }}" class="w-full border rounded px-3 py-2"></div>
 <div><label class="font-semibold">Bukti Transfer (JPG/PDF)</label><input type="file" name="file_bukti_transfer" class="w-full border rounded px-3 py-2"></div>
 <p class="md:col-span-2 text-xs bg-amber-50 border rounded p-2">Non-Katolik wajib Surat Pernyataan (diunggah di kolom Baptis).</p>
 <div class="md:col-span-2 mt-2"><button class="px-6 py-2 bg-navy-900 text-white rounded-lg font-bold">Kirim Pendaftaran</button></div>
