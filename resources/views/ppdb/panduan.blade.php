@@ -6,7 +6,7 @@
 <div class="grid md:grid-cols-2 gap-4 mt-3">
 <div class="border rounded-xl p-4"><div class="font-bold text-blue-900">A. Online</div><ol class="list-decimal ml-5 mt-2 space-y-1">
 <li>Buka portal ini (pengganti bit.ly/SPMBSMAPAULUSPTK) → menu Daftar.</li>
-<li>Transfer ke BNI 6617710032 a.n. YPSB SMA STO PAULUS, simpan bukti.</li>
+<li>Transfer ke BNI 6617••••32 a.n. YPSB SMA STO PAULUS (nomor lengkap ada di form Step 4), simpan bukti.</li>
 <li>Isi 4 Step: Data Siswa → Data Ortu → Upload (Akte, KK, KTP Ortu, Baptis/Pernyataan, Rapor Kls 8 Ganjil+Genap, Foto 3x4) → Bukti Transfer.</li>
 <li>Terima Kartu Calon Peserta. Gunakan + bukti transfer untuk ukur seragam (vendor / WA).</li>
 <li>Masuk Grup WA Ortu untuk info terkini.</li></ol></div>

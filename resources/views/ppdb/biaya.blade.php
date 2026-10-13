@@ -20,7 +20,7 @@
 </div>
 <div id="hasil" class="mt-2 text-sm bg-blue-50 border rounded-xl p-3">Pilih kategori & klik Hitung.</div>
 </div>
-<p class="text-xs text-slate-500 mt-3">Transfer: BNI 6617710032 a.n. YPSB SMA STO PAULUS. Tidak lunas hingga 31 Jul 2027 = mengundurkan diri & hangus. Mundur sepihak hangus 100%. Tidak lulus SMP kembali 100% (bawa SK + kwitansi).</p>
+<p class="text-xs text-slate-500 mt-3">Transfer: BNI 6617••••32 a.n. YPSB SMA STO PAULUS <button onclick="document.getElementById('rek').classList.toggle('hidden');this.remove()" class="underline text-blue-700">Tampilkan nomor lengkap</button> <span id="rek" class="hidden font-bold">BNI 6617710032</span>. Pastikan nama penerima benar & konfirmasi ke WA resmi. Tidak lunas hingga 31 Jul 2027 = mengundurkan diri & hangus. Mundur sepihak hangus 100%. Tidak lulus SMP kembali 100% (bawa SK + kwitansi).</p>
 </div>
 <script>
 const T={};

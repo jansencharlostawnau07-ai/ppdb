@@ -28,7 +28,7 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
 <div class="bg-navy-950 text-blue-100 text-xs">
 <div class="max-w-6xl mx-auto px-4 py-1.5 flex justify-between">
 <span>SPMB 2027/2028 • Gel.1: 1 Okt–18 Des 2026 • Gel.2: 4 Jan–31 Mar 2027</span>
-<span class="hidden sm:block">BNI 6617710032 a.n. YPSB SMA STO PAULUS</span>
+<span class="hidden sm:block">Rekening BNI disamarkan — lihat full di form pendaftaran</span>
 </div>
 </div>
 <header class="bg-white/95 backdrop-blur sticky top-0 z-20 shadow-sm">
@@ -75,7 +75,7 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
 </div>
 <div>
 <div class="font-bold text-white mb-1">Rekening</div>
-<div class="text-xs">BNI 6617710032<br>a.n. YPSB SMA STO PAULUS<br>Simpan bukti transfer untuk diunggah.</div>
+<div class="text-xs">BNI 6617••••32<br>a.n. YPSB SMA STO PAULUS<br>Nomor lengkap tampil di form pendaftaran + konfirmasi WA panitia.</div>
 </div>
 <div>
 <div class="font-bold text-white mb-1">Panitia (WA)</div>

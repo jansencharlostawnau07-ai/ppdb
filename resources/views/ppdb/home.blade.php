@@ -7,7 +7,7 @@
 <div>
 <div class="inline-flex items-center gap-2 bg-white/15 border border-white/20 rounded-full px-3 py-1 text-xs mb-3">SPMB TA 2027/2028 • Online & Offline</div>
 <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Daftar SPMB<br>Santo Paulus 2027/2028.</h1>
-<p class="mt-3 text-blue-100 text-sm md:text-base">Transfer BNI 6617710032, isi form 4 langkah, upload berkas, terima Kartu Calon Peserta & masuk Grup WA Ortu. Offline juga bisa langsung ke sekolah.</p>
+<p class="mt-3 text-blue-100 text-sm md:text-base">Isi form 4 langkah, transfer ke rekening resmi (nomor full tampil di form Step 4), upload berkas, terima Kartu Calon Peserta & masuk Grup WA Ortu. Offline juga bisa langsung ke sekolah.</p>
 <div class="mt-5 flex flex-wrap gap-2">
 <a href="{{ route('ppdb.daftar') }}" class="px-6 py-3 bg-gold-400 text-navy-950 font-extrabold rounded-xl shadow hover:bg-yellow-300">Daftar Online Sekarang</a>
 <a href="{{ route('ppdb.biaya') }}" class="px-6 py-3 bg-white/15 border border-white/30 rounded-xl font-bold hover:bg-white/25">Cek Biaya/Gelombang</a>
@@ -34,7 +34,7 @@
 @endsection
 @section('content')
 <div class="grid md:grid-cols-4 gap-4">
-<div class="bg-white rounded-2xl p-5 shadow card-hover border-t-4 border-blue-900"><div class="font-bold">1. Transfer & Simpan Bukti</div><div class="text-sm text-slate-600 mt-1">BNI 6617710032 a.n. YPSB SMA STO PAULUS. Bukti diunggah di Step 4.</div></div>
+<div class="bg-white rounded-2xl p-5 shadow card-hover border-t-4 border-blue-900"><div class="font-bold">1. Transfer & Simpan Bukti</div><div class="text-sm text-slate-600 mt-1">BNI 6617••••32 a.n. YPSB SMA STO PAULUS (full di form Step 4). Bukti diunggah di Step 4.</div></div>
 <div class="bg-white rounded-2xl p-5 shadow card-hover border-t-4 border-amber-500"><div class="font-bold">2. Isi Form + Upload</div><div class="text-sm text-slate-600 mt-1">Akte, KK, KTP Ortu, Baptis/Pernyataan, Rapor Kls 8 Ganjil+Genap, Foto 3x4.</div></div>
 <div class="bg-white rounded-2xl p-5 shadow card-hover border-t-4 border-green-600"><div class="font-bold">3. Kartu Peserta</div><div class="text-sm text-slate-600 mt-1">Kartu + bukti transfer untuk ukur seragam (vendor / WA).</div></div>
 <div class="bg-white rounded-2xl p-5 shadow card-hover border-t-4 border-purple-600"><div class="font-bold">4. Grup WA Ortu</div><div class="text-sm text-slate-600 mt-1">Info terkini dari sekolah via grup. Cek status via nomor + tgl lahir.</div></div>
