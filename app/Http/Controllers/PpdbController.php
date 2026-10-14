@@ -184,9 +184,14 @@ class PpdbController extends Controller
     {
         $pendaftaran = PpdbRegistration::where('no_pendaftaran', $no)->firstOrFail();
 
-        if ($pendaftaran->status !== 'diterima' || ! $this->bolehLihatDokumen($request, $no)) {
+        if ($pendaftaran->status !== 'diterima') {
             return redirect()->route('ppdb.cek.form')
                 ->withErrors(['no_pendaftaran' => 'Kwitansi tersedia setelah status DITERIMA. Cek status dahulu.']);
+        }
+
+        if (! $this->bolehLihatDokumen($request, $no)) {
+            return redirect()->route('ppdb.cek.form')
+                ->withErrors(['no_pendaftaran' => 'Sesi berakhir. Masukkan nomor + tanggal lahir di Cek Status dahulu.']);
         }
 
         return view('ppdb.kwitansi', compact('pendaftaran'));
@@ -222,6 +227,8 @@ class PpdbController extends Controller
         if (! $pendaftaran) {
             return back()->withErrors(['no_pendaftaran' => 'Data tidak ditemukan. Periksa nomor dan tanggal lahir.'])->withInput();
         }
+
+        $request->session()->put('ppdb_last_no', $pendaftaran->no_pendaftaran);
 
         return view('ppdb.status', compact('pendaftaran'));
     }
