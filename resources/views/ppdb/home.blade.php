@@ -43,7 +43,15 @@
 <div class="rounded-2xl overflow-hidden shadow bg-white">
 <div id="slidebox" class="relative w-full h-64 overflow-hidden bg-slate-50">
 @php
-$slides = array_merge([['src' => asset('images/seragam.jpg'), 'alt' => 'Seragam SMA Santo Paulus']], collect(glob(public_path('images/slide-*')))->map(fn($f) => ['src' => asset('images/'.basename($f)), 'alt' => 'Kegiatan sekolah'])->values()->all());
+$slides = array_merge(
+  [['src' => asset('images/seragam.jpg'), 'alt' => 'Seragam SMA Santo Paulus']],
+  // CONTOH sementara — hapus baris ini setelah foto asli slide-*.jpg tersedia
+  [
+    ['src' => 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1200&auto=format&fit=crop', 'alt' => 'Kegiatan belajar (contoh)'],
+    ['src' => 'https://images.unsplash.com/photo-1427504494785-3a9ca7044f45?q=80&w=1200&auto=format&fit=crop', 'alt' => 'Ekstrakurikuler (contoh)'],
+  ],
+  collect(glob(public_path('images/slide-*')))->map(fn($f) => ['src' => asset('images/'.basename($f)), 'alt' => 'Kegiatan sekolah'])->values()->all()
+);
 @endphp
 @foreach($slides as $i => $s)
 <img src="{{ $s['src'] }}" alt="{{ $s['alt'] }}" data-slide="{{ $i }}" class="slide-img absolute inset-0 w-full h-64 object-cover object-top transition-opacity duration-700 {{ $i === 0 ? 'opacity-100' : 'opacity-0' }}">
