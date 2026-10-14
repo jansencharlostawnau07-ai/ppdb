@@ -19,8 +19,7 @@
 <button class="px-4 py-1 bg-blue-900 text-white rounded">Filter</button>
 </form>
 <div class="bg-white rounded shadow overflow-x-auto">
-<table class="w-full text-sm">
-<thead class="bg-slate-100"><tr><th class="p-2 text-left">No</th><th class="p-2 text-left">Nama</th><th class="p-2 text-left">Asal Sekolah</th><th class="p-2">Jalur</th><th class="p-2">Status</th><th class="p-2">Aksi</th></tr></thead>
+<table class="w-full text-sm"><thead class="bg-slate-100"><tr><th class="p-2 text-left">No</th><th class="p-2 text-left">Nama</th><th class="p-2 text-left">Asal Sekolah</th><th class="p-2">Jalur</th><th class="p-2">Status</th><th class="p-2">Aksi</th></tr></thead>
 <tbody>
 @forelse($pendaftar as $p)
 <tr class="border-t">
@@ -38,4 +37,14 @@
 </table>
 </div>
 <div class="mt-3">{{ $pendaftar->links() }}</div>
+@if(($duplikat ?? collect())->isNotEmpty())
+<div class="mt-4 bg-amber-50 border border-amber-300 rounded p-4 text-sm">
+<div class="font-bold text-amber-800">Kemungkinan data ganda (nama + tanggal lahir sama):</div>
+<ul class="list-disc ml-5 mt-1">
+@foreach($duplikat as $d)
+<li>{{ $d->nama_lengkap }} — {{ $d->nos }}</li>
+@endforeach
+</ul>
+</div>
+@endif
 @endsection

@@ -30,10 +30,11 @@ class PpdbController extends Controller
     {
         $validated = $request->validate([
             'nama_lengkap' => 'required|string|max:100',
-            'nisn' => 'nullable|digits:10',
+            'nisn' => 'nullable|digits:10|unique:ppdb_registrations,nisn',
             'nik' => [
                 'nullable',
                 'digits:16',
+                'unique:ppdb_registrations,nik',
                 function ($attribute, $value, $fail) use ($request) {
                     $tgl = $request->input('tanggal_lahir');
                     if (! $value || ! $tgl) {
@@ -94,22 +95,32 @@ class PpdbController extends Controller
 
         $data['status'] = 'pending';
 
-        $pendaftaran = DB::transaction(function () use ($data) {
-            $attempt = 0;
-            while (true) {
-                $attempt++;
-                try {
-                    return PpdbRegistration::create(
-                        $data + ['no_pendaftaran' => PpdbRegistration::generateNoPendaftaran()]
-                    );
-                } catch (QueryException $e) {
-                    if ($attempt >= 5 || ! str_contains($e->getMessage(), 'ppdb_registrations.no_pendaftaran')) {
-                        throw $e;
+        try {
+            $pendaftaran = DB::transaction(function () use ($data) {
+                $attempt = 0;
+                while (true) {
+                    $attempt++;
+                    try {
+                        return PpdbRegistration::create(
+                            $data + ['no_pendaftaran' => PpdbRegistration::generateNoPendaftaran()]
+                        );
+                    } catch (QueryException $e) {
+                        if ($attempt >= 5 || ! str_contains($e->getMessage(), 'ppdb_registrations.no_pendaftaran')) {
+                            throw $e;
+                        }
+                        usleep(50000 * $attempt);
                     }
-                    usleep(50000 * $attempt);
                 }
+            });
+        } catch (QueryException $e) {
+            if (str_contains($e->getMessage(), 'ppdb_registrations.nisn')) {
+                return back()->withErrors(['nisn' => 'NISN ini sudah terdaftar. Gunakan Cek Status atau hubungi panitia.'])->withInput();
             }
-        });
+            if (str_contains($e->getMessage(), 'ppdb_registrations.nik')) {
+                return back()->withErrors(['nik' => 'NIK ini sudah terdaftar. Gunakan Cek Status atau hubungi panitia.'])->withInput();
+            }
+            throw $e;
+        }
 
         $request->session()->put('ppdb_last_no', $pendaftaran->no_pendaftaran);
 

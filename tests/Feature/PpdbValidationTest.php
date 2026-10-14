@@ -58,4 +58,22 @@ class PpdbValidationTest extends TestCase
         $response->assertRedirect();
         $this->assertDatabaseCount('ppdb_registrations', 1);
     }
+
+    public function test_nisn_duplikat_ditolak(): void
+    {
+        $this->post('/daftar', $this->baseData(['nisn' => '0012345678', 'nik' => '6171011005110001']));
+        $response = $this->post('/daftar', $this->baseData(['nisn' => '0012345678', 'nik' => '6171011005110002']));
+
+        $response->assertSessionHasErrors('nisn');
+        $this->assertDatabaseCount('ppdb_registrations', 1);
+    }
+
+    public function test_nik_duplikat_ditolak(): void
+    {
+        $this->post('/daftar', $this->baseData(['nik' => '6171011005110001']));
+        $response = $this->post('/daftar', $this->baseData(['nik' => '6171011005110001', 'nisn' => '0012345679']));
+
+        $response->assertSessionHasErrors('nik');
+        $this->assertDatabaseCount('ppdb_registrations', 1);
+    }
 }

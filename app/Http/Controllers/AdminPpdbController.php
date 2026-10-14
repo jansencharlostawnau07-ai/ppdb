@@ -69,6 +69,10 @@ class AdminPpdbController extends Controller
         }
 
         $pendaftar = $query->latest()->paginate(15)->withQueryString();
+        $duplikat = PpdbRegistration::selectRaw('nama_lengkap, tanggal_lahir, COUNT(*) c, GROUP_CONCAT(no_pendaftaran, ", ") nos')
+            ->groupBy('nama_lengkap', 'tanggal_lahir')
+            ->havingRaw('COUNT(*) > 1')
+            ->limit(20)->get();
         $stats = [
             'total' => PpdbRegistration::count(),
             'pending' => PpdbRegistration::where('status', 'pending')->count(),
@@ -77,7 +81,7 @@ class AdminPpdbController extends Controller
             'ditolak' => PpdbRegistration::where('status', 'ditolak')->count(),
         ];
 
-        return view('admin.dashboard', compact('pendaftar', 'stats'));
+        return view('admin.dashboard', compact('pendaftar', 'stats', 'duplikat'));
     }
 
     public function show(PpdbRegistration $pendaftar)
