@@ -41,9 +41,14 @@
 </div>
 <div class="grid md:grid-cols-2 gap-4 mt-4">
 <div class="rounded-2xl overflow-hidden shadow bg-white">
-<img src="{{ asset('images/seragam.jpg') }}" class="w-full h-64 object-cover object-top" alt="Seragam SMA Santo Paulus">
+<div class="overflow-hidden"><img src="{{ asset('images/seragam.jpg') }}" class="w-full h-64 object-cover object-top kenburns" alt="Seragam SMA Santo Paulus"></div>
 <div class="p-5 text-sm"><div class="font-bold text-lg text-navy-900">Seragam & Fasilitas</div><div class="text-slate-600">Putih-Abu, Putih-Putih, Pramuka, Olahraga, Kaos Sabtu, Jas Almamater + 3 kaos kaki, dasi, cekak, kacu.</div></div>
 </div>
+<style>
+.kenburns{animation:kb 12s ease-in-out infinite alternate}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.12) translateY(-2%)}}
+@media (prefers-reduced-motion:reduce){.kenburns{animation:none}}
+</style>
 <div class="bg-white rounded-2xl p-5 shadow text-sm">
 <h2 class="font-extrabold text-navy-900 mb-2">Ringkasan Biaya 2027/2028</h2>
 <ul class="space-y-1">
