@@ -9,7 +9,9 @@
 <p class="text-sm">Nama: <b>{{ $pendaftaran->nama_lengkap }}</b> • Jalur {{ $pendaftaran->jalur }} • Gelombang {{ $pendaftaran->gelombang }}</p>
 <p class="text-xs text-slate-500 mt-2">Screenshot / catat nomor ini. Gunakan untuk Cek Status dengan tanggal lahir.</p>
 <p class="text-xs mt-2 bg-amber-50 border rounded p-2">Sudah transfer? Pastikan ke <b>BNI 6617710032 a.n. YPSB SMA STO PAULUS</b>. Belum? Nomor ini juga tampil di Step 4 form. Jangan bagikan OTP/PIN ke siapa pun.</p>
-<div class="mt-4 flex justify-center gap-2">
+<div class="mt-4 flex flex-wrap justify-center gap-2">
+<a href="{{ route('ppdb.kartu', $pendaftaran->no_pendaftaran) }}" target="_blank" class="px-4 py-2 bg-green-700 text-white rounded">Cetak Kartu</a>
+<a href="https://wa.me/6281257928672?text=Halo%20panitia%20SPMB,%20saya%20{{ urlencode($pendaftaran->nama_lengkap) }}%20{{ $pendaftaran->no_pendaftaran }}" target="_blank" class="px-4 py-2 bg-green-600 text-white rounded">Konfirmasi WA</a>
 <a href="{{ route('ppdb.cek.form') }}" class="px-4 py-2 bg-blue-900 text-white rounded">Cek Status</a>
 <a href="{{ route('ppdb.home') }}" class="px-4 py-2 border rounded">Beranda</a>
 </div>

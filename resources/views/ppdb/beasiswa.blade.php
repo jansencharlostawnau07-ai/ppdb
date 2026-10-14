@@ -9,5 +9,9 @@
 <div class="border rounded-xl p-4"><div class="font-bold">Anak Guru & Karyawan YPSB</div><ul class="mt-2 list-disc ml-5"><li>Potongan 50% DPP & 50% SPP</li><li>Lampirkan fotokopi/scan KK</li></ul></div>
 <div class="border rounded-xl p-4"><div class="font-bold">Juara Pararel SMP Kota Pontianak</div><p class="mt-2">Hubungi panitia: Lenny, M.A. 0812-5036-8308 untuk informasi lanjut.</p></div>
 </div>
+<div class="mt-4 flex flex-wrap gap-2">
+<a href="{{ route('ppdb.daftar') }}" class="px-5 py-2 bg-navy-900 text-white rounded-lg font-bold">Daftar + Lampirkan Bukti Beasiswa</a>
+<a href="https://wa.me/6281250368308?text=Halo%20panitia%20beasiswa%20SPMB%20Santo%20Paulus%202027/2028" target="_blank" class="px-5 py-2 bg-green-600 text-white rounded-lg font-bold">WA Lenny (Beasiswa)</a>
+</div>
 </div>
 @endsection

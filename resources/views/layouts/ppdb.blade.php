@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>@yield('title', 'SPMB SMA Santo Paulus Pontianak 2027/2028')</title>
+<link rel="icon" type="image/png" href="{{ asset('images/logo-sekolah.png') }}">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
@@ -43,6 +44,7 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
 <nav class="flex items-center gap-1 text-sm font-semibold flex-wrap">
 <a href="{{ route('ppdb.home') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->routeIs('ppdb.home') ? 'bg-slate-200 underline underline-offset-4 decoration-amber-500 decoration-2' : '' }}">Beranda</a>
 <a href="{{ route('ppdb.panduan') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->routeIs('ppdb.panduan') ? 'bg-slate-200 underline underline-offset-4 decoration-amber-500 decoration-2' : '' }}">Panduan</a>
+<a href="{{ route('ppdb.faq') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->routeIs('ppdb.faq') ? 'bg-slate-200 underline underline-offset-4 decoration-amber-500 decoration-2' : '' }}">FAQ</a>
 <a href="{{ route('ppdb.biaya') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->routeIs('ppdb.biaya') ? 'bg-slate-200 underline underline-offset-4 decoration-amber-500 decoration-2' : '' }}">Biaya</a>
 <a href="{{ route('ppdb.beasiswa') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->routeIs('ppdb.beasiswa') ? 'bg-slate-200 underline underline-offset-4 decoration-amber-500 decoration-2' : '' }}">Beasiswa</a>
 @auth

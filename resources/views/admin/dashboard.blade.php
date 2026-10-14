@@ -3,6 +3,7 @@
 @section('content')
 <div class="flex items-center justify-between mb-4">
 <h1 class="font-bold text-blue-900 text-lg">Dashboard Admin PPDB</h1>
+<a href="{{ route('admin.export') }}" class="text-sm px-3 py-1 bg-green-700 text-white rounded">Export CSV</a>
 </div>
 <div class="grid grid-cols-2 md:grid-cols-5 gap-2 mb-4 text-center text-sm">
 <div class="bg-white p-3 rounded shadow"><div class="font-bold text-lg">{{ $stats['total'] }}</div>Total</div>

@@ -148,6 +148,23 @@ class PpdbController extends Controller
         return view('ppdb.panduan');
     }
 
+    public function faq()
+    {
+        return view('ppdb.faq');
+    }
+
+    public function kartu(Request $request, string $no)
+    {
+        $pendaftaran = PpdbRegistration::where('no_pendaftaran', $no)->firstOrFail();
+
+        if ($request->session()->get('ppdb_last_no') !== $no && ! Auth::check()) {
+            return redirect()->route('ppdb.cek.form')
+                ->withErrors(['no_pendaftaran' => 'Gunakan Cek Status dengan nomor + tanggal lahir untuk melihat data ini.']);
+        }
+
+        return view('ppdb.kartu', compact('pendaftaran'));
+    }
+
     public function cek(Request $request)
     {
         $request->validate([

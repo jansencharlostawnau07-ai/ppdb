@@ -118,4 +118,30 @@ class AdminPpdbController extends Controller
 
         return redirect()->route('admin.dashboard')->with('success', 'Data dan berkas dihapus.');
     }
+
+    public function export()
+    {
+        $rows = PpdbRegistration::latest()->get([
+            'no_pendaftaran', 'nama_lengkap', 'nisn', 'nik', 'jenis_kelamin',
+            'tanggal_lahir', 'no_hp', 'asal_sekolah', 'asal_smp_kategori',
+            'jalur', 'gelombang', 'skema_bayar', 'status', 'created_at',
+        ]);
+
+        $callback = function () use ($rows) {
+            $out = fopen('php://output', 'w');
+            fputcsv($out, ['No', 'Nama', 'NISN', 'NIK', 'JK', 'Tgl Lahir', 'HP', 'Asal SMP', 'Kategori', 'Jalur', 'Gelombang', 'Skema', 'Status', 'Daftar']);
+            foreach ($rows as $r) {
+                fputcsv($out, [
+                    $r->no_pendaftaran, $r->nama_lengkap, $r->nisn, $r->nik,
+                    $r->jenis_kelamin, $r->tanggal_lahir?->format('Y-m-d'), $r->no_hp,
+                    $r->asal_sekolah, $r->asal_smp_kategori, $r->jalur,
+                    $r->gelombang, $r->skema_bayar, $r->status,
+                    $r->created_at->format('Y-m-d H:i'),
+                ]);
+            }
+            fclose($out);
+        };
+
+        return response()->streamDownload($callback, 'spmb-2027-pendaftar.csv', ['Content-Type' => 'text/csv']);
+    }
 }
