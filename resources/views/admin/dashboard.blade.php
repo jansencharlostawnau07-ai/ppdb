@@ -37,6 +37,11 @@
 </table>
 </div>
 <div class="mt-3">{{ $pendaftar->links() }}</div>
+<div class="grid md:grid-cols-3 gap-4 mt-4 text-sm">
+<div class="bg-white p-4 rounded shadow"><div class="font-bold mb-2">Per Gelombang</div>@foreach($grafik['gelombang'] as $g)<div class="flex items-center gap-2 mb-1"><span class="w-20">Gel. {{ $g->gelombang }}</span><div class="flex-1 bg-slate-100 rounded h-4"><div class="bg-navy-900 h-4 rounded" style="width:{{ $stats['total'] ? round($g->c / $stats['total'] * 100) : 0 }}%"></div></div><b>{{ $g->c }}</b></div>@endforeach</div>
+<div class="bg-white p-4 rounded shadow"><div class="font-bold mb-2">Per Jalur</div>@foreach($grafik['jalur'] as $g)<div class="flex items-center gap-2 mb-1"><span class="w-20">{{ $g->jalur }}</span><div class="flex-1 bg-slate-100 rounded h-4"><div class="bg-amber-500 h-4 rounded" style="width:{{ $stats['total'] ? round($g->c / $stats['total'] * 100) : 0 }}%"></div></div><b>{{ $g->c }}</b></div>@endforeach</div>
+<div class="bg-white p-4 rounded shadow"><div class="font-bold mb-2">Per Asal SMP</div>@foreach($grafik['kategori'] as $g)<div class="flex items-center gap-2 mb-1"><span class="w-20">{{ $g->k }}</span><div class="flex-1 bg-slate-100 rounded h-4"><div class="bg-green-600 h-4 rounded" style="width:{{ $stats['total'] ? round($g->c / $stats['total'] * 100) : 0 }}%"></div></div><b>{{ $g->c }}</b></div>@endforeach</div>
+</div>
 @if(($duplikat ?? collect())->isNotEmpty())
 <div class="mt-4 bg-amber-50 border border-amber-300 rounded p-4 text-sm">
 <div class="font-bold text-amber-800">Kemungkinan data ganda (nama + tanggal lahir sama):</div>

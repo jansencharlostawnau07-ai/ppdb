@@ -180,6 +180,18 @@ class PpdbController extends Controller
         return view('ppdb.kartu', compact('pendaftaran'));
     }
 
+    public function kwitansi(Request $request, string $no)
+    {
+        $pendaftaran = PpdbRegistration::where('no_pendaftaran', $no)->firstOrFail();
+
+        if ($pendaftaran->status !== 'diterima' || ! $this->bolehLihatDokumen($request, $no)) {
+            return redirect()->route('ppdb.cek.form')
+                ->withErrors(['no_pendaftaran' => 'Kwitansi tersedia setelah status DITERIMA. Cek status dahulu.']);
+        }
+
+        return view('ppdb.kwitansi', compact('pendaftaran'));
+    }
+
     private function bolehLihatDokumen(Request $request, string $no): bool
     {
         if ($request->session()->get('ppdb_last_no') === $no) {

@@ -16,6 +16,8 @@ Route::get('/sukses/{no}', [PpdbController::class, 'sukses'])
     ->middleware('throttle:60,1')->name('ppdb.sukses');
 Route::get('/kartu/{no}', [PpdbController::class, 'kartu'])
     ->middleware('throttle:60,1')->name('ppdb.kartu');
+Route::get('/kwitansi/{no}', [PpdbController::class, 'kwitansi'])
+    ->middleware('throttle:60,1')->name('ppdb.kwitansi');
 Route::get('/faq', [PpdbController::class, 'faq'])->name('ppdb.faq');
 Route::get('/cek-status', [PpdbController::class, 'cekForm'])->name('ppdb.cek.form');
 Route::post('/cek-status', [PpdbController::class, 'cek'])
@@ -29,6 +31,8 @@ Route::post('/admin/login', [AdminPpdbController::class, 'login'])
 Route::middleware(['auth', 'ppdb.admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminPpdbController::class, 'dashboard'])->name('dashboard');
     Route::get('/pendaftar/{pendaftar}', [AdminPpdbController::class, 'show'])->name('show');
+    Route::get('/pendaftar/{pendaftar}/edit', [AdminPpdbController::class, 'edit'])->name('edit');
+    Route::put('/pendaftar/{pendaftar}', [AdminPpdbController::class, 'update'])->name('update');
     Route::patch('/pendaftar/{pendaftar}/status', [AdminPpdbController::class, 'updateStatus'])->name('status');
     Route::delete('/pendaftar/{pendaftar}', [AdminPpdbController::class, 'destroy'])->name('destroy');
     Route::get('/export-csv', [AdminPpdbController::class, 'export'])->name('export');

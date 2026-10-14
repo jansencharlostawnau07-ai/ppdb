@@ -69,6 +69,11 @@ class AdminPpdbController extends Controller
         }
 
         $pendaftar = $query->latest()->paginate(15)->withQueryString();
+        $grafik = [
+            'gelombang' => PpdbRegistration::selectRaw('gelombang, COUNT(*) c')->groupBy('gelombang')->orderBy('gelombang')->get(),
+            'jalur' => PpdbRegistration::selectRaw('jalur, COUNT(*) c')->groupBy('jalur')->get(),
+            'kategori' => PpdbRegistration::selectRaw('asal_smp_kategori k, COUNT(*) c')->groupBy('k')->get(),
+        ];
         $duplikat = PpdbRegistration::selectRaw('nama_lengkap, tanggal_lahir, COUNT(*) c, GROUP_CONCAT(no_pendaftaran, ", ") nos')
             ->groupBy('nama_lengkap', 'tanggal_lahir')
             ->havingRaw('COUNT(*) > 1')
@@ -81,12 +86,48 @@ class AdminPpdbController extends Controller
             'ditolak' => PpdbRegistration::where('status', 'ditolak')->count(),
         ];
 
-        return view('admin.dashboard', compact('pendaftar', 'stats', 'duplikat'));
+        return view('admin.dashboard', compact('pendaftar', 'stats', 'duplikat', 'grafik'));
     }
 
     public function show(PpdbRegistration $pendaftar)
     {
         return view('admin.show', compact('pendaftar'));
+    }
+
+    public function edit(PpdbRegistration $pendaftar)
+    {
+        return view('admin.edit', compact('pendaftar'));
+    }
+
+    public function update(Request $request, PpdbRegistration $pendaftar)
+    {
+        $validated = $request->validate([
+            'nama_lengkap' => 'required|string|max:100',
+            'nisn' => 'nullable|digits:10|unique:ppdb_registrations,nisn,'.$pendaftar->id,
+            'nik' => 'nullable|digits:16|unique:ppdb_registrations,nik,'.$pendaftar->id,
+            'jenis_kelamin' => 'required|in:L,P',
+            'tempat_lahir' => 'nullable|string|max:50',
+            'tanggal_lahir' => 'required|date|before:today',
+            'agama' => 'nullable|string|max:30',
+            'alamat' => 'required|string|max:2000',
+            'no_hp' => ['required', 'string', 'max:20', 'regex:/^[0-9+\-\s]{9,20}$/'],
+            'email' => 'nullable|email|max:100',
+            'asal_sekolah' => 'required|string|max:100',
+            'asal_smp_kategori' => 'required|in:ypsb,suster,umum',
+            'nama_ayah' => 'nullable|string|max:100',
+            'pekerjaan_ayah' => 'nullable|string|max:50',
+            'nama_ibu' => 'nullable|string|max:100',
+            'pekerjaan_ibu' => 'nullable|string|max:50',
+            'no_hp_ortu' => ['nullable', 'string', 'max:20', 'regex:/^[0-9+\-\s]{9,20}$/'],
+            'jalur' => 'required|in:reguler,prestasi,afirmasi',
+            'gelombang' => 'required|in:1,2',
+            'skema_bayar' => 'required|in:lunas,angsuran',
+            'nominal_bayar' => 'nullable|numeric|min:0|max:999999999',
+        ]);
+
+        $pendaftar->update($validated);
+
+        return redirect()->route('admin.show', $pendaftar)->with('success', 'Data '.$pendaftar->no_pendaftaran.' diperbarui.');
     }
 
     public function updateStatus(Request $request, PpdbRegistration $pendaftar)
@@ -97,6 +138,10 @@ class AdminPpdbController extends Controller
         ]);
 
         $pendaftar->update($validated);
+
+        if ($validated['status'] === 'diterima' && ! $pendaftar->no_kwitansi) {
+            $pendaftar->update(['no_kwitansi' => 'KW-'.date('Y').'-'.str_pad((string) $pendaftar->id, 5, '0', STR_PAD_LEFT)]);
+        }
 
         return back()->with('success', 'Status '.$pendaftar->no_pendaftaran.' diubah ke '.$validated['status']);
     }

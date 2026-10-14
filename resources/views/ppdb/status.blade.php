@@ -17,7 +17,7 @@
 Status: <b class="uppercase">{{ $pendaftaran->status }}</b>
 @if($pendaftaran->catatan_admin)<div class="mt-1">Catatan panitia: {{ $pendaftaran->catatan_admin }}</div>@endif
 @if($pendaftaran->status=='pending')<div class="mt-1">Berkas sedang antre verifikasi panitia.</div>@endif
-@if($pendaftaran->status=='diterima')<div class="mt-1">Selamat! Silakan daftar ulang ke sekolah membawa berkas asli.</div>@endif
+@if($pendaftaran->status=='diterima')<div class="mt-1">Selamat! Silakan daftar ulang ke sekolah membawa berkas asli.</div><div class="mt-2"><a href="{{ route('ppdb.kwitansi', $pendaftaran->no_pendaftaran) }}" class="underline font-bold">Cetak Kwitansi</a></div>@endif
 </div>
 </div>
 @endsection

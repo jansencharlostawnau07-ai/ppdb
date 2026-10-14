@@ -4,7 +4,7 @@
 <a href="{{ route('admin.dashboard') }}" class="text-sm text-blue-700 underline">&larr; Kembali</a>
 <div class="bg-white p-6 rounded shadow mt-2 text-sm">
 <h1 class="font-bold text-blue-900 text-lg">{{ $pendaftar->nama_lengkap }} <span class="text-xs font-normal">({{ $pendaftar->no_pendaftaran }})</span></h1>
-<div class="mt-1"><a href="{{ route('ppdb.kartu', $pendaftar->no_pendaftaran) }}" target="_blank" class="text-sm text-green-700 underline">Cetak Kartu Peserta</a></div>
+<div class="mt-1 flex gap-3"><a href="{{ route('admin.edit', $pendaftar) }}" class="text-sm text-blue-700 underline">Ubah Data</a><a href="{{ route('ppdb.kartu', $pendaftar->no_pendaftaran) }}" target="_blank" class="text-sm text-green-700 underline">Cetak Kartu Peserta</a>@if($pendaftar->status=='diterima')<a href="{{ route('ppdb.kwitansi', $pendaftar->no_pendaftaran) }}" target="_blank" class="text-sm text-green-700 underline">Cetak Kwitansi {{ $pendaftar->no_kwitansi }}</a>@endif</div>
 <div class="grid md:grid-cols-2 gap-2 mt-3">
 <div>NISN: {{ $pendaftar->nisn ?? '-' }}</div><div>NIK: {{ $pendaftar->nik ?? '-' }}</div>
 <div>JK: {{ $pendaftar->jenis_kelamin }}</div><div>Lahir: {{ $pendaftar->tempat_lahir }} {{ $pendaftar->tanggal_lahir?->format('d-m-Y') }}</div>

@@ -17,6 +17,7 @@ class PpdbRegistration extends Model
         'file_kk', 'file_akta', 'file_ktp_ortu', 'file_baptis',
         'file_rapor_8_ganjil', 'file_rapor_8_genap',
         'file_foto', 'file_bukti_transfer', 'nama_bank',
+        'no_kwitansi', 'nominal_bayar',
     ];
 
     protected $casts = [
