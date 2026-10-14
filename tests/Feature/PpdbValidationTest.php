@@ -76,4 +76,14 @@ class PpdbValidationTest extends TestCase
         $response->assertSessionHasErrors('nik');
         $this->assertDatabaseCount('ppdb_registrations', 1);
     }
+
+    public function test_foto_bukan_gambar_ditolak(): void
+    {
+        $response = $this->post('/daftar', $this->baseData([
+            'file_foto' => \Illuminate\Http\UploadedFile::fake()->create('palsu.pdf', 100),
+        ]));
+
+        $response->assertSessionHasErrors('file_foto');
+        $this->assertDatabaseCount('ppdb_registrations', 0);
+    }
 }

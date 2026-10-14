@@ -81,7 +81,7 @@ class PpdbController extends Controller
             'file_baptis' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'file_rapor_8_ganjil' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'file_rapor_8_genap' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'file_foto' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+            'file_foto' => 'nullable|file|mimes:jpg,jpeg,png|max:2048|dimensions:min_width=200,min_height=200',
             'file_bukti_transfer' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
