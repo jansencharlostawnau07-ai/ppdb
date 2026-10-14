@@ -131,13 +131,21 @@ class AdminPpdbController extends Controller
             $out = fopen('php://output', 'w');
             fputcsv($out, ['No', 'Nama', 'NISN', 'NIK', 'JK', 'Tgl Lahir', 'HP', 'Asal SMP', 'Kategori', 'Jalur', 'Gelombang', 'Skema', 'Status', 'Daftar']);
             foreach ($rows as $r) {
-                fputcsv($out, [
+                fputcsv($out, array_map(function ($v) {
+                    $v = (string) ($v ?? '');
+                    // Cegah formula injection saat dibuka di Excel
+                    if (preg_match('/^[=+\-@]/', $v)) {
+                        $v = "'".$v;
+                    }
+
+                    return $v;
+                }, [
                     $r->no_pendaftaran, $r->nama_lengkap, $r->nisn, $r->nik,
                     $r->jenis_kelamin, $r->tanggal_lahir?->format('Y-m-d'), $r->no_hp,
                     $r->asal_sekolah, $r->asal_smp_kategori, $r->jalur,
                     $r->gelombang, $r->skema_bayar, $r->status,
                     $r->created_at->format('Y-m-d H:i'),
-                ]);
+                ]));
             }
             fclose($out);
         };

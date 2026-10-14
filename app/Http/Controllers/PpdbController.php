@@ -120,7 +120,7 @@ class PpdbController extends Controller
     {
         $pendaftaran = PpdbRegistration::where('no_pendaftaran', $no)->firstOrFail();
 
-        if ($request->session()->get('ppdb_last_no') !== $no && ! Auth::check()) {
+        if (! $this->bolehLihatDokumen($request, $no)) {
             return redirect()->route('ppdb.cek.form')
                 ->withErrors(['no_pendaftaran' => 'Gunakan Cek Status dengan nomor + tanggal lahir untuk melihat data ini.']);
         }
@@ -157,12 +157,28 @@ class PpdbController extends Controller
     {
         $pendaftaran = PpdbRegistration::where('no_pendaftaran', $no)->firstOrFail();
 
-        if ($request->session()->get('ppdb_last_no') !== $no && ! Auth::check()) {
+        if (! $this->bolehLihatDokumen($request, $no)) {
             return redirect()->route('ppdb.cek.form')
                 ->withErrors(['no_pendaftaran' => 'Gunakan Cek Status dengan nomor + tanggal lahir untuk melihat data ini.']);
         }
 
         return view('ppdb.kartu', compact('pendaftaran'));
+    }
+
+    private function bolehLihatDokumen(Request $request, string $no): bool
+    {
+        if ($request->session()->get('ppdb_last_no') === $no) {
+            return true;
+        }
+
+        $user = Auth::user();
+        if (! $user) {
+            return false;
+        }
+
+        $allowed = array_filter(array_map('trim', explode(',', (string) env('PPDB_ADMIN_EMAILS', 'admin@smasantopaulus.sch.id'))));
+
+        return in_array($user->email, $allowed, true);
     }
 
     public function cek(Request $request)

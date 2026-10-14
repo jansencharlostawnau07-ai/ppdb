@@ -12,8 +12,10 @@ Route::get('/panduan', [PpdbController::class, 'panduan'])->name('ppdb.panduan')
 Route::get('/daftar', [PpdbController::class, 'create'])->name('ppdb.daftar');
 Route::post('/daftar', [PpdbController::class, 'store'])
     ->middleware('throttle:10,1')->name('ppdb.store');
-Route::get('/sukses/{no}', [PpdbController::class, 'sukses'])->name('ppdb.sukses');
-Route::get('/kartu/{no}', [PpdbController::class, 'kartu'])->name('ppdb.kartu');
+Route::get('/sukses/{no}', [PpdbController::class, 'sukses'])
+    ->middleware('throttle:60,1')->name('ppdb.sukses');
+Route::get('/kartu/{no}', [PpdbController::class, 'kartu'])
+    ->middleware('throttle:60,1')->name('ppdb.kartu');
 Route::get('/faq', [PpdbController::class, 'faq'])->name('ppdb.faq');
 Route::get('/cek-status', [PpdbController::class, 'cekForm'])->name('ppdb.cek.form');
 Route::post('/cek-status', [PpdbController::class, 'cek'])
