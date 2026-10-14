@@ -41,14 +41,34 @@
 </div>
 <div class="grid md:grid-cols-2 gap-4 mt-4">
 <div class="rounded-2xl overflow-hidden shadow bg-white">
-<div class="overflow-hidden"><img src="{{ asset('images/seragam.jpg') }}" class="w-full h-64 object-cover object-top kenburns" alt="Seragam SMA Santo Paulus"></div>
+<div id="slidebox" class="relative w-full h-64 overflow-hidden bg-slate-50">
+@php
+$slides = array_merge([['src' => asset('images/seragam.jpg'), 'alt' => 'Seragam SMA Santo Paulus']], collect(glob(public_path('images/slide-*')))->map(fn($f) => ['src' => asset('images/'.basename($f)), 'alt' => 'Kegiatan sekolah'])->values()->all());
+@endphp
+@foreach($slides as $i => $s)
+<img src="{{ $s['src'] }}" alt="{{ $s['alt'] }}" data-slide="{{ $i }}" class="slide-img absolute inset-0 w-full h-64 object-cover object-top transition-opacity duration-700 {{ $i === 0 ? 'opacity-100' : 'opacity-0' }}">
+@endforeach
+<div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1.5">
+@foreach($slides as $i => $s)
+<button data-dot="{{ $i }}" aria-label="Foto {{ $i + 1 }}" class="slide-dot w-2.5 h-2.5 rounded-full {{ $i === 0 ? 'bg-white' : 'bg-white/50' }}"></button>
+@endforeach
+</div>
+</div>
 <div class="p-5 text-sm"><div class="font-bold text-lg text-navy-900">Seragam & Fasilitas</div><div class="text-slate-600">Putih-Abu, Putih-Putih, Pramuka, Olahraga, Kaos Sabtu, Jas Almamater + 3 kaos kaki, dasi, cekak, kacu.</div></div>
 </div>
-<style>
-.kenburns{animation:kb 12s ease-in-out infinite alternate}
-@keyframes kb{from{transform:scale(1)}to{transform:scale(1.12) translateY(-2%)}}
-@media (prefers-reduced-motion:reduce){.kenburns{animation:none}}
-</style>
+<script>
+(function(){
+ var imgs=document.querySelectorAll('.slide-img'), dots=document.querySelectorAll('.slide-dot'), cur=0;
+ if(imgs.length<2) return;
+ function show(i){
+  cur=(i+imgs.length)%imgs.length;
+  imgs.forEach(function(el,k){el.classList.toggle('opacity-100',k===cur);el.classList.toggle('opacity-0',k!==cur);});
+  dots.forEach(function(el,k){el.classList.toggle('bg-white',k===cur);el.classList.toggle('bg-white/50',k!==cur);});
+ }
+ dots.forEach(function(el){el.addEventListener('click',function(){show(+el.dataset.dot);});});
+ setInterval(function(){show(cur+1);},4000);
+})();
+</script>
 <div class="bg-white rounded-2xl p-5 shadow text-sm">
 <h2 class="font-extrabold text-navy-900 mb-2">Ringkasan Biaya 2027/2028</h2>
 <ul class="space-y-1">
