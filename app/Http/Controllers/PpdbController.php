@@ -105,7 +105,7 @@ class PpdbController extends Controller
                             $data + ['no_pendaftaran' => PpdbRegistration::generateNoPendaftaran()]
                         );
                     } catch (QueryException $e) {
-                        if ($attempt >= 5 || ! str_contains($e->getMessage(), 'ppdb_registrations.no_pendaftaran')) {
+                        if ($attempt >= 5 || ! str_contains(strtolower($e->getMessage()), 'no_pendaftaran')) {
                             throw $e;
                         }
                         usleep(50000 * $attempt);
@@ -113,10 +113,14 @@ class PpdbController extends Controller
                 }
             });
         } catch (QueryException $e) {
-            if (str_contains($e->getMessage(), 'ppdb_registrations.nisn')) {
+            $msg = strtolower($e->getMessage());
+            if (str_contains($msg, 'no_pendaftaran')) {
+                throw $e;
+            }
+            if (str_contains($msg, 'nisn')) {
                 return back()->withErrors(['nisn' => 'NISN ini sudah terdaftar. Gunakan Cek Status atau hubungi panitia.'])->withInput();
             }
-            if (str_contains($e->getMessage(), 'ppdb_registrations.nik')) {
+            if (str_contains($msg, 'nik')) {
                 return back()->withErrors(['nik' => 'NIK ini sudah terdaftar. Gunakan Cek Status atau hubungi panitia.'])->withInput();
             }
             throw $e;
