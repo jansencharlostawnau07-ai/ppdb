@@ -19,7 +19,7 @@ tailwind.config = {
 body{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
 .hero-bg{
  background-image: linear-gradient(rgba(15,32,77,.88), rgba(15,32,77,.72)), url('{{ asset('images/hero-sekolah.jpg') }}');
- background-size:cover; background-position:center;
+ background-size:cover; background-position:center 30%;
 }
 .pattern{background-image:radial-gradient(rgba(255,255,255,.18) 1px, transparent 1px); background-size:18px 18px}
 .card-hover{transition:.2s} .card-hover:hover{transform:translateY(-3px); box-shadow:0 12px 30px rgba(15,32,77,.15)}
