@@ -18,7 +18,7 @@ tailwind.config = {
 <style>
 body{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
 .hero-bg{
- background-image: linear-gradient(rgba(15,32,77,.88), rgba(15,32,77,.72)), url('https://images.unsplash.com/photo-1562774053-701939374585?q=80&w=1600&auto=format&fit=crop');
+ background-image: linear-gradient(rgba(15,32,77,.88), rgba(15,32,77,.72)), url('{{ asset('images/hero-sekolah.jpg') }}');
  background-size:cover; background-position:center;
 }
 .pattern{background-image:radial-gradient(rgba(255,255,255,.18) 1px, transparent 1px); background-size:18px 18px}
