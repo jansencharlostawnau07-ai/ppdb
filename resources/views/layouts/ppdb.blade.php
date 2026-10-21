@@ -77,8 +77,8 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
 <div class="bg-navy-950 text-blue-100">
 <div class="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-4 gap-6 text-sm">
 <div>
-<div class="font-bold text-white mb-1">SPMB 2027/2028</div>
-<div class="text-blue-200 text-xs">Online via portal ini (pengganti bit.ly/SPMBSMAPAULUSPTK) & offline langsung di sekolah. Portal khusus SPMB, ditautkan ke web utama Desember.</div>
+<div class="font-bold text-white mb-1">SMA Santo Paulus Pontianak</div>
+<div class="text-blue-200 text-xs">Jl. Arani No.1, Pontianak<br>Kec. Pontianak Selatan, Kota Pontianak, Kalbar<br>SPMB 2027/2028 (portal terpisah dari web utama)</div>
 </div>
 <div>
 <div class="font-bold text-white mb-1">Rekening</div>
