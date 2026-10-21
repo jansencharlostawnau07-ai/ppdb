@@ -78,7 +78,7 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
 <div class="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-4 gap-6 text-sm">
 <div>
 <div class="font-bold text-white mb-1">SMA Santo Paulus Pontianak</div>
-<div class="text-blue-200 text-xs">Jl. Arani No.1, Pontianak<br>Kec. Pontianak Selatan, Kota Pontianak, Kalbar<br>SPMB 2027/2028 (portal terpisah dari web utama)</div>
+<div class="text-blue-200 text-xs">Jl. Arif Rahman Hakim No.92, Darat Sekip<br>Kec. Pontianak Kota, Kota Pontianak, Kalbar 78243<br>SPMB 2027/2028 (portal terpisah dari web utama)</div>
 </div>
 <div>
 <div class="font-bold text-white mb-1">Rekening</div>
