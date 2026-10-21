@@ -64,7 +64,7 @@ class PpdbValidationTest extends TestCase
         $this->post('/daftar', $this->baseData(['nisn' => '0012345678', 'nik' => '6171011005110001']));
         $response = $this->post('/daftar', $this->baseData(['nisn' => '0012345678', 'nik' => '6171011005110002']));
 
-        $response->assertSessionHasErrors('nisn');
+        $response->assertSessionHasErrors(['nisn' => 'NIK atau NISN Anda sudah terdaftar']);
         $this->assertDatabaseCount('ppdb_registrations', 1);
     }
 
@@ -73,7 +73,7 @@ class PpdbValidationTest extends TestCase
         $this->post('/daftar', $this->baseData(['nik' => '6171011005110001']));
         $response = $this->post('/daftar', $this->baseData(['nik' => '6171011005110001', 'nisn' => '0012345679']));
 
-        $response->assertSessionHasErrors('nik');
+        $response->assertSessionHasErrors(['nik' => 'NIK atau NISN Anda sudah terdaftar']);
         $this->assertDatabaseCount('ppdb_registrations', 1);
     }
 

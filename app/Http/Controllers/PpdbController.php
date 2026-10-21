@@ -117,11 +117,8 @@ class PpdbController extends Controller
             if (str_contains($msg, 'no_pendaftaran')) {
                 throw $e;
             }
-            if (str_contains($msg, 'nisn')) {
-                return back()->withErrors(['nisn' => 'NISN ini sudah terdaftar. Gunakan Cek Status atau hubungi panitia.'])->withInput();
-            }
-            if (str_contains($msg, 'nik')) {
-                return back()->withErrors(['nik' => 'NIK ini sudah terdaftar. Gunakan Cek Status atau hubungi panitia.'])->withInput();
+            if (str_contains($msg, 'nisn') || str_contains($msg, 'nik')) {
+                return back()->withErrors(['nisn' => 'NIK atau NISN Anda sudah terdaftar', 'nik' => 'NIK atau NISN Anda sudah terdaftar'])->withInput();
             }
             throw $e;
         }
