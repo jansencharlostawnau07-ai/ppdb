@@ -7,7 +7,7 @@
 <div>
 <div class="inline-flex items-center gap-2 bg-white/15 border border-white/20 rounded-full px-3 py-1 text-xs mb-3">SPMB TA 2027/2028 • Online & Offline</div>
 <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Daftar SPMB<br>Santo Paulus 2027/2028.</h1>
-<p class="mt-3 text-blue-100 text-sm md:text-base">Isi form 4 langkah, transfer ke rekening resmi (nomor full tampil di form Step 4), upload berkas, terima Kartu Calon Peserta & masuk Grup WA Ortu. Offline juga bisa langsung ke sekolah.</p>
+<p class="mt-3 text-blue-100 text-sm md:text-base">Mari bergabung dalam keluarga besar SMA Santo Paulus Pontianak dan tumbuh menjadi pribadi yang beriman, berkarakter, berprestasi, dan siap menghadapi masa depan.</p>
 <div class="mt-5 flex flex-wrap gap-2">
 <a href="{{ route('ppdb.daftar') }}" class="px-6 py-3 bg-gold-400 text-navy-950 font-extrabold rounded-xl shadow hover:bg-yellow-300">Daftar Online Sekarang</a>
 <a href="{{ route('ppdb.biaya') }}" class="px-6 py-3 bg-white/15 border border-white/30 rounded-xl font-bold hover:bg-white/25">Cek Biaya/Gelombang</a>
