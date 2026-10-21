@@ -84,8 +84,8 @@ class PpdbController extends Controller
             'file_foto' => 'nullable|file|mimes:jpg,jpeg,png|max:2048|dimensions:min_width=200,min_height=200',
             'file_bukti_transfer' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ], [
-            'nisn.unique' => 'NIK atau NISN Anda sudah terdaftar',
-            'nik.unique' => 'NIK atau NISN Anda sudah terdaftar',
+            'nisn.unique' => 'NIK atau NISN Anda sudah terdaftar, Mohon untuk diperiksa kembali',
+            'nik.unique' => 'NIK atau NISN Anda sudah terdaftar, Mohon untuk diperiksa kembali',
         ]);
 
         $data = $validated;
@@ -121,7 +121,7 @@ class PpdbController extends Controller
                 throw $e;
             }
             if (str_contains($msg, 'nisn') || str_contains($msg, 'nik')) {
-                return back()->withErrors(['nisn' => 'NIK atau NISN Anda sudah terdaftar', 'nik' => 'NIK atau NISN Anda sudah terdaftar'])->withInput();
+                return back()->withErrors(['nisn' => 'NIK atau NISN Anda sudah terdaftar, Mohon untuk diperiksa kembali'])->withInput();
             }
             throw $e;
         }
