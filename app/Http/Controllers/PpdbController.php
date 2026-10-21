@@ -30,11 +30,10 @@ class PpdbController extends Controller
     {
         $validated = $request->validate([
             'nama_lengkap' => 'required|string|max:100',
-            'nisn' => 'nullable|digits:10|unique:ppdb_registrations,nisn',
+            'nisn' => 'nullable|digits:10',
             'nik' => [
                 'nullable',
                 'digits:16',
-                'unique:ppdb_registrations,nik',
                 function ($attribute, $value, $fail) use ($request) {
                     $tgl = $request->input('tanggal_lahir');
                     if (! $value || ! $tgl) {
@@ -83,9 +82,6 @@ class PpdbController extends Controller
             'file_rapor_8_genap' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
             'file_foto' => 'nullable|file|mimes:jpg,jpeg,png|max:2048|dimensions:min_width=200,min_height=200',
             'file_bukti_transfer' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-        ], [
-            'nisn.unique' => 'NIK atau NISN Anda sudah terdaftar, Mohon untuk diperiksa kembali',
-            'nik.unique' => 'NIK atau NISN Anda sudah terdaftar, Mohon untuk diperiksa kembali',
         ]);
 
         $data = $validated;
@@ -97,6 +93,14 @@ class PpdbController extends Controller
         }
 
         $data['status'] = 'pending';
+
+        // Cek duplikasi NIK/NISN sebelum insert
+        if (! empty($data['nisn']) && PpdbRegistration::where('nisn', $data['nisn'])->exists()) {
+            return back()->withErrors(['nisn' => 'NIK atau NISN Anda sudah terdaftar, Mohon untuk diperiksa kembali'])->withInput();
+        }
+        if (! empty($data['nik']) && PpdbRegistration::where('nik', $data['nik'])->exists()) {
+            return back()->withErrors(['nik' => 'NIK atau NISN Anda sudah terdaftar, Mohon untuk diperiksa kembali'])->withInput();
+        }
 
         try {
             $pendaftaran = DB::transaction(function () use ($data) {
@@ -120,8 +124,11 @@ class PpdbController extends Controller
             if (str_contains($msg, 'no_pendaftaran')) {
                 throw $e;
             }
-            if (str_contains($msg, 'nisn') || str_contains($msg, 'nik')) {
+            if (str_contains($msg, 'nisn')) {
                 return back()->withErrors(['nisn' => 'NIK atau NISN Anda sudah terdaftar, Mohon untuk diperiksa kembali'])->withInput();
+            }
+            if (str_contains($msg, 'nik')) {
+                return back()->withErrors(['nik' => 'NIK atau NISN Anda sudah terdaftar, Mohon untuk diperiksa kembali'])->withInput();
             }
             throw $e;
         }
