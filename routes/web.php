@@ -28,6 +28,10 @@ Route::get('/admin/login', [AdminPpdbController::class, 'loginForm'])->name('adm
 Route::post('/admin/login', [AdminPpdbController::class, 'login'])
     ->middleware('throttle:5,1')->name('admin.login.post');
 
+// Login Google (Socialite)
+Route::get('/auth/google', [AdminPpdbController::class, 'redirectToGoogle'])->name('admin.google');
+Route::get('/auth/google/callback', [AdminPpdbController::class, 'handleGoogleCallback'])->name('admin.google.callback');
+
 Route::middleware(['auth', 'ppdb.admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [AdminPpdbController::class, 'dashboard'])->name('dashboard');
     Route::get('/pendaftar/{pendaftar}', [AdminPpdbController::class, 'show'])->name('show');
@@ -38,3 +42,8 @@ Route::middleware(['auth', 'ppdb.admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/export-csv', [AdminPpdbController::class, 'export'])->name('export');
     Route::post('/logout', [AdminPpdbController::class, 'logout'])->name('logout');
 });
+
+// PPDB Publik — Multi-step form dengan sesi per halaman
+Route::get('/daftar/{step?}', [PpdbController::class, 'daftarStep'])->name('ppdb.daftar');
+Route::post('/daftar/{step}', [PpdbController::class, 'daftarStoreStep'])->name('ppdb.daftar.step');
+Route::post('/daftar/submit', [PpdbController::class, 'daftarSubmit'])->name('ppdb.daftar.submit');

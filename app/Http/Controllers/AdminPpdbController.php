@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\PpdbRegistration;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AdminPpdbController extends Controller
 {
@@ -32,6 +35,48 @@ class AdminPpdbController extends Controller
         }
 
         return back()->withErrors(['email' => 'Email atau password salah.'])->withInput();
+    }
+
+    // --- Login Google (Socialite) ---
+    public function redirectToGoogle()
+    {
+        // Requires: composer require laravel/socialite
+        // dan GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET / GOOGLE_CLIENT_REDIRECT di .env
+        try {
+            $provider = \Laravel\Socialite\Facades\Socialite::driver('google');
+            return $provider->redirect();
+        } catch (\Exception $e) {
+            return back()->withErrors(['google' => 'Login Google belum dikonfigurasi. Hubungi admin sistem.']);
+        }
+    }
+
+    public function handleGoogleCallback(Request $request)
+    {
+        try {
+            $provider = \Laravel\Socialite\Facades\Socialite::driver('google');
+            $googleUser = $provider->user();
+
+            $email = $googleUser->getEmail();
+            $name = $googleUser->getName() ?? $email;
+
+            // Cari atau buat user admin dari email Google
+            $user = User::where('email', $email)->first();
+            if (! $user) {
+                $user = User::create([
+                    'name' => $name,
+                    'email' => $email,
+                    'password' => Hash::make(Str::random(24)),
+                    'email_verified_at' => now(),
+                ]);
+            }
+
+            Auth::login($user, true);
+            $request->session()->regenerate();
+
+            return redirect()->route('admin.dashboard');
+        } catch (\Exception $e) {
+            return back()->withErrors(['google' => 'Login Google gagal. Silakan coba lagi.']);
+        }
     }
 
     public function logout(Request $request)

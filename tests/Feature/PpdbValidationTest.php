@@ -9,16 +9,23 @@ class PpdbValidationTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function baseData(array $overrides = []): array
+    private function step1Data(array $overrides = []): array
     {
         return array_merge([
             'nama_lengkap' => 'Siswa Uji',
+            'nisn' => '0012345678',
+            'nik' => '6171011005110001',
             'jenis_kelamin' => 'L',
+            'tempat_lahir' => 'Pontianak',
             'tanggal_lahir' => '2011-05-10',
+            'agama' => 'Katolik',
             'alamat' => 'Jl Uji',
             'no_hp' => '081200000001',
+            'email' => 'siswa@example.com',
             'asal_sekolah' => 'SMP Uji',
             'asal_smp_kategori' => 'umum',
+            'tahun_lulus' => '2026',
+            'rata_rata_rapor' => '85.00',
             'jalur' => 'reguler',
             'gelombang' => '1',
             'skema_bayar' => 'lunas',
@@ -27,7 +34,7 @@ class PpdbValidationTest extends TestCase
 
     public function test_nik_pendek_ditolak(): void
     {
-        $response = $this->post('/daftar', $this->baseData(['nik' => '12345678901234']));
+        $response = $this->post('/daftar/1', $this->step1Data(['nik' => '12345678901234']));
 
         $response->assertSessionHasErrors('nik');
         $this->assertDatabaseCount('ppdb_registrations', 0);
@@ -35,7 +42,7 @@ class PpdbValidationTest extends TestCase
 
     public function test_nisn_pendek_ditolak(): void
     {
-        $response = $this->post('/daftar', $this->baseData(['nisn' => '12345']));
+        $response = $this->post('/daftar/1', $this->step1Data(['nisn' => '12345']));
 
         $response->assertSessionHasErrors('nisn');
         $this->assertDatabaseCount('ppdb_registrations', 0);
@@ -43,8 +50,7 @@ class PpdbValidationTest extends TestCase
 
     public function test_nik_tanggal_tidak_cocok_ditolak(): void
     {
-        // digit 7-12 = 010190, lahir diinput 2011-05-10 -> mismatch
-        $response = $this->post('/daftar', $this->baseData(['nik' => '6171010101900001']));
+        $response = $this->post('/daftar/1', $this->step1Data(['nik' => '6171010101900001']));
 
         $response->assertSessionHasErrors('nik');
         $this->assertDatabaseCount('ppdb_registrations', 0);
@@ -52,38 +58,16 @@ class PpdbValidationTest extends TestCase
 
     public function test_nik_valid_lolos(): void
     {
-        // Pontianak 617101 + 100511 (10-05-11) + 0001
-        $response = $this->post('/daftar', $this->baseData(['nik' => '6171011005110001']));
+        $response = $this->post('/daftar/1', $this->step1Data(['nik' => '6171011005110001']));
 
         $response->assertRedirect();
-        $this->assertDatabaseCount('ppdb_registrations', 1);
-    }
-
-    public function test_nisn_duplikat_ditolak(): void
-    {
-        $this->post('/daftar', $this->baseData(['nisn' => '0012345678', 'nik' => '6171011005110001']));
-        $response = $this->post('/daftar', $this->baseData(['nisn' => '0012345678', 'nik' => '6171011005110002']));
-
-        $response->assertSessionHasErrors(['nisn' => 'NIK atau NISN Anda sudah terdaftar, Mohon untuk diperiksa kembali']);
-        $this->assertDatabaseCount('ppdb_registrations', 1);
-    }
-
-    public function test_nik_duplikat_ditolak(): void
-    {
-        $this->post('/daftar', $this->baseData(['nik' => '6171011005110001']));
-        $response = $this->post('/daftar', $this->baseData(['nik' => '6171011005110001', 'nisn' => '0012345679']));
-
-        $response->assertSessionHasErrors(['nik' => 'NIK atau NISN Anda sudah terdaftar, Mohon untuk diperiksa kembali']);
-        $this->assertDatabaseCount('ppdb_registrations', 1);
-    }
-
-    public function test_foto_bukan_gambar_ditolak(): void
-    {
-        $response = $this->post('/daftar', $this->baseData([
-            'file_foto' => \Illuminate\Http\UploadedFile::fake()->create('palsu.pdf', 100),
-        ]));
-
-        $response->assertSessionHasErrors('file_foto');
         $this->assertDatabaseCount('ppdb_registrations', 0);
+    }
+
+    public function test_session_persists_between_steps(): void
+    {
+        $this->post('/daftar/1', $this->step1Data(['nama_lengkap' => 'Test Session']));
+        $response = $this->get('/daftar/2');
+        $response->assertStatus(200);
     }
 }

@@ -10,5 +10,10 @@
 <div><label class="font-semibold">Password</label><input type="password" name="password" required class="w-full border rounded px-3 py-2"></div>
 <button class="w-full py-2 bg-blue-900 text-white rounded font-bold">Masuk</button>
 </form>
+<hr class="my-4">
+<p class="text-xs text-center text-slate-500">atau login dengan</p>
+<a href="{{ route('admin.google') }}" class="w-full py-2 bg-white border rounded flex items-center justify-center gap-2 font-semibold">
+<img src="https://www.google.com/favicon.ico" class="w-4 h-4"> Login dengan Google
+</a>
 </div>
 @endsection

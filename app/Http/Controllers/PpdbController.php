@@ -7,6 +7,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PpdbController extends Controller
 {
@@ -23,84 +24,176 @@ class PpdbController extends Controller
 
     public function create()
     {
-        return view('ppdb.daftar');
+        return redirect()->route('ppdb.daftar', ['step' => 1]);
     }
 
-    public function store(Request $request)
+    public function daftarStep(Request $request, $step = 1)
     {
-        $validated = $request->validate([
-            'nama_lengkap' => 'required|string|max:100',
-            'nisn' => 'nullable|digits:10',
-            'nik' => [
-                'nullable',
-                'digits:16',
-                function ($attribute, $value, $fail) use ($request) {
-                    $tgl = $request->input('tanggal_lahir');
-                    if (! $value || ! $tgl) {
-                        return;
+        $step = (int) $step;
+        if ($step < 1 || $step > 4) {
+            return redirect()->route('ppdb.daftar', ['step' => 1]);
+        }
+
+        $saved = session('ppdb_form', []);
+
+        return view('ppdb.daftar', [
+            'step' => $step,
+            'saved' => $saved,
+        ]);
+    }
+
+    public function daftarStoreStep(Request $request, $step)
+    {
+        $step = (int) $step;
+        if ($step < 1 || $step > 4) {
+            return redirect()->route('ppdb.daftar', ['step' => 1]);
+        }
+
+        $saved = session('ppdb_form', []);
+
+        switch ($step) {
+            case 1:
+                $validated = $request->validate([
+                    'nama_lengkap' => 'required|string|max:100',
+                    'nisn' => 'nullable|digits:10',
+                    'nik' => [
+                        'nullable',
+                        'digits:16',
+                        function ($attribute, $value, $fail) use ($request) {
+                            $tgl = $request->input('tanggal_lahir');
+                            if (! $value || ! $tgl) {
+                                return;
+                            }
+                            try {
+                                $date = \Carbon\Carbon::parse($tgl);
+                            } catch (\Exception $e) {
+                                return;
+                            }
+                            $day = (int) substr($value, 6, 2);
+                            if ($day > 40) {
+                                $day -= 40;
+                            }
+                            $month = (int) substr($value, 8, 2);
+                            $yy = substr($value, 10, 2);
+                            if ((int) $date->format('d') !== $day
+                                || (int) $date->format('m') !== $month
+                                || (int) $date->format('y') !== (int) $yy) {
+                                $fail('Tanggal lahir di NIK tidak cocok dengan Tanggal Lahir (digit 7–12 NIK = DDMMYY).');
+                            }
+                        },
+                    ],
+                    'jenis_kelamin' => 'required|in:L,P',
+                    'tempat_lahir' => 'nullable|string|max:50',
+                    'tanggal_lahir' => 'required|date|before:today',
+                    'agama' => 'nullable|string|max:30',
+                    'alamat' => 'required|string|max:2000',
+                    'no_hp' => ['required', 'string', 'max:20', 'regex:/^[0-9+\-\s]{9,20}$/'],
+                    'email' => 'nullable|email|max:100',
+                    'asal_sekolah' => 'required|string|max:100',
+                    'asal_smp_kategori' => 'required|in:ypsb,suster,umum',
+                    'tahun_lulus' => 'nullable|string|max:4',
+                    'rata_rata_rapor' => 'nullable|numeric|min:0|max:100',
+                    'jalur' => 'required|in:reguler,prestasi,afirmasi',
+                    'gelombang' => 'required|in:1,2',
+                    'skema_bayar' => 'required|in:lunas,angsuran',
+                ]);
+                $saved['step1'] = $validated;
+                break;
+
+            case 2:
+                $validated = $request->validate([
+                    'nama_ayah' => 'nullable|string|max:100',
+                    'pekerjaan_ayah' => 'nullable|string|max:50',
+                    'nama_ibu' => 'nullable|string|max:100',
+                    'pekerjaan_ibu' => 'nullable|string|max:50',
+                    'no_hp_ortu' => ['nullable', 'string', 'max:20', 'regex:/^[0-9+\-\s]{9,20}$/'],
+                ]);
+                $saved['step2'] = $validated;
+                break;
+
+            case 3:
+                $validated = $request->validate([
+                    'file_kk' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+                    'file_akta' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+                    'file_ktp_ortu' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+                    'file_baptis' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+                    'file_rapor_8_ganjil' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+                    'file_rapor_8_genap' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+                    'file_foto' => 'nullable|file|mimes:jpg,jpeg,png|max:2048|dimensions:min_width=200,min_height=200',
+                ]);
+                foreach (['file_kk', 'file_akta', 'file_ktp_ortu', 'file_baptis', 'file_rapor_8_ganjil', 'file_rapor_8_genap', 'file_foto'] as $field) {
+                    if ($request->hasFile($field)) {
+                        $saved['step3'][$field] = $request->file($field)->store('ppdb_temp', 'public');
                     }
-                    try {
-                        $date = \Carbon\Carbon::parse($tgl);
-                    } catch (\Exception $e) {
-                        return;
-                    }
-                    $day = (int) substr($value, 6, 2);
-                    if ($day > 40) {
-                        $day -= 40;
-                    }
-                    $month = (int) substr($value, 8, 2);
-                    $yy = substr($value, 10, 2);
-                    if ($day !== (int) $date->format('d')
-                        || $month !== (int) $date->format('m')
-                        || $yy !== $date->format('y')) {
-                        $fail('Tanggal lahir di NIK tidak cocok dengan Tanggal Lahir (digit 7–12 NIK = DDMMYY).');
-                    }
-                },
-            ],
-            'jenis_kelamin' => 'required|in:L,P',
-            'tempat_lahir' => 'nullable|string|max:50',
-            'tanggal_lahir' => 'required|date|before:today',
-            'agama' => 'nullable|string|max:30',
-            'alamat' => 'required|string|max:2000',
-            'no_hp' => ['required', 'string', 'max:20', 'regex:/^[0-9+\-\s]{9,20}$/'],
-            'email' => 'nullable|email|max:100',
-            'asal_sekolah' => 'required|string|max:100',
-            'asal_smp_kategori' => 'required|in:ypsb,suster,umum',
-            'nama_ayah' => 'nullable|string|max:100',
-            'pekerjaan_ayah' => 'nullable|string|max:50',
-            'nama_ibu' => 'nullable|string|max:100',
-            'pekerjaan_ibu' => 'nullable|string|max:50',
-            'no_hp_ortu' => ['nullable', 'string', 'max:20', 'regex:/^[0-9+\-\s]{9,20}$/'],
-            'jalur' => 'required|in:reguler,prestasi,afirmasi',
-            'gelombang' => 'required|in:1,2',
-            'skema_bayar' => 'required|in:lunas,angsuran',
-            'file_kk' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'file_akta' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'file_ktp_ortu' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'file_baptis' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'file_rapor_8_ganjil' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'file_rapor_8_genap' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'file_foto' => 'nullable|file|mimes:jpg,jpeg,png|max:2048|dimensions:min_width=200,min_height=200',
-            'file_bukti_transfer' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+                }
+                break;
+
+            case 4:
+                $validated = $request->validate([
+                    'file_bukti_transfer' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+                    'nominal_transfer' => 'nullable|numeric|min:0|max:999999999',
+                ]);
+                if ($request->hasFile('file_bukti_transfer')) {
+                    $saved['step4']['file_bukti_transfer'] = $request->file('file_bukti_transfer')->store('ppdb_temp', 'public');
+                }
+                $saved['step4']['nominal_transfer'] = $validated['nominal_transfer'] ?? null;
+                break;
+        }
+
+        session(['ppdb_form' => $saved]);
+
+        if ($step < 4) {
+            return redirect()->route('ppdb.daftar', ['step' => $step + 1])
+                ->with('success', 'Langkah ' . $step . ' tersimpan. Lanjut ke langkah ' . ($step + 1) . '.');
+        }
+
+        return redirect()->route('ppdb.daftar.submit.form');
+    }
+
+    public function daftarSubmitForm()
+    {
+        $saved = session('ppdb_form', []);
+        if (empty($saved)) {
+            return redirect()->route('ppdb.daftar', ['step' => 1]);
+        }
+
+        return view('ppdb.daftar_submit', compact('saved'));
+    }
+
+    public function daftarSubmit(Request $request)
+    {
+        $saved = session('ppdb_form', []);
+        if (empty($saved)) {
+            return redirect()->route('ppdb.daftar', ['step' => 1]);
+        }
+
+        $step1 = $saved['step1'] ?? [];
+        $step2 = $saved['step2'] ?? [];
+        $step4 = $saved['step4'] ?? [];
+
+        $data = array_merge($step1, $step2, [
+            'nama_bank' => 'BNI-6617710032-YPSB-SMA-STO-PAULUS',
+            'nominal_transfer' => $step4['nominal_transfer'] ?? null,
+            'status' => 'pending',
         ]);
 
-        $data = $validated;
-        $data['nama_bank'] = 'BNI-6617710032-YPSB-SMA-STO-PAULUS';
         foreach (['file_kk', 'file_akta', 'file_ktp_ortu', 'file_baptis', 'file_rapor_8_ganjil', 'file_rapor_8_genap', 'file_foto', 'file_bukti_transfer'] as $field) {
-            if ($request->hasFile($field)) {
-                $data[$field] = $request->file($field)->store('ppdb', 'public');
+            if (! empty($saved['step3'][$field] ?? null)) {
+                $data[$field] = $saved['step3'][$field];
+            }
+            if (! empty($saved['step4']['file_bukti_transfer'] ?? null) && $field === 'file_bukti_transfer') {
+                $data[$field] = $saved['step4']['file_bukti_transfer'];
             }
         }
 
-        $data['status'] = 'pending';
+        // Pindah file dari ppdb_temp ke ppdb permanen
+        foreach ($data as $key => $val) {
+            if (is_string($val) && str_starts_with($val, 'ppdb_temp/')) {
+                $data[$key] = Storage::disk('public')->move($val, str_replace('ppdb_temp/', 'ppdb/', $val));
+            }
+        }
 
-        // Cek duplikasi NIK/NISN sebelum insert
-        if (! empty($data['nisn']) && PpdbRegistration::where('nisn', $data['nisn'])->exists()) {
-            return back()->withErrors(['nisn' => 'NIK atau NISN Anda sudah terdaftar, Mohon untuk diperiksa kembali'])->withInput();
-        }
-        if (! empty($data['nik']) && PpdbRegistration::where('nik', $data['nik'])->exists()) {
-            return back()->withErrors(['nik' => 'NIK atau NISN Anda sudah terdaftar, Mohon untuk diperiksa kembali'])->withInput();
-        }
+        $data['no_pendaftaran'] = PpdbRegistration::generateNoPendaftaran();
 
         try {
             $pendaftaran = DB::transaction(function () use ($data) {
@@ -108,9 +201,7 @@ class PpdbController extends Controller
                 while (true) {
                     $attempt++;
                     try {
-                        return PpdbRegistration::create(
-                            $data + ['no_pendaftaran' => PpdbRegistration::generateNoPendaftaran()]
-                        );
+                        return PpdbRegistration::create($data);
                     } catch (QueryException $e) {
                         if ($attempt >= 5 || ! str_contains(strtolower($e->getMessage()), 'no_pendaftaran')) {
                             throw $e;
@@ -133,6 +224,7 @@ class PpdbController extends Controller
             throw $e;
         }
 
+        session()->forget('ppdb_form');
         $request->session()->put('ppdb_last_no', $pendaftaran->no_pendaftaran);
 
         return redirect()->route('ppdb.sukses', $pendaftaran->no_pendaftaran);
