@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PpdbDraft;
 use App\Models\PpdbRegistration;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
@@ -22,6 +23,32 @@ class PpdbController extends Controller
         return view('ppdb.home', compact('stats'));
     }
 
+    private function draftPayload(): array
+    {
+        if (Auth::check()) {
+            $draft = PpdbDraft::where('user_id', Auth::id())->first();
+
+            return $draft?->payload ?? [];
+        }
+
+        return session('ppdb_form', []);
+    }
+
+    private function saveDraftPayload(array $payload): void
+    {
+        if (Auth::check()) {
+            PpdbDraft::updateOrCreate(
+                ['user_id' => Auth::id()],
+                ['payload' => $payload]
+            );
+
+            return;
+        }
+
+        session(['ppdb_form' => $payload]);
+        session()->save();
+    }
+
     public function daftarStep(Request $request, $step = 1)
     {
         $step = (int) $step;
@@ -29,7 +56,7 @@ class PpdbController extends Controller
             return redirect()->route('ppdb.daftar', ['step' => 1]);
         }
 
-        $saved = session('ppdb_form', []);
+        $saved = $this->draftPayload();
 
         return view('ppdb.daftar', [
             'step' => $step,
@@ -44,17 +71,31 @@ class PpdbController extends Controller
             return redirect()->route('ppdb.daftar', ['step' => 1]);
         }
 
-        $saved = session('ppdb_form', []);
+        $saved = $this->draftPayload();
 
         switch ($step) {
             case 1:
+                $duplicateMessage = 'NIK atau NISN Anda sudah terdaftar, Mohon untuk diperiksa kembali';
                 $validated = $request->validate([
                     'nama_lengkap' => 'required|string|max:100',
-                    'nisn' => 'nullable|digits:10',
+                    'nisn' => [
+                        'nullable',
+                        'digits:10',
+                        function ($attribute, $value, $fail) use ($duplicateMessage) {
+                            if ($value && PpdbRegistration::where('nisn', $value)->exists()) {
+                                $fail($duplicateMessage);
+                            }
+                        },
+                    ],
                     'nik' => [
                         'nullable',
                         'digits:16',
-                        function ($attribute, $value, $fail) use ($request) {
+                        function ($attribute, $value, $fail) use ($request, $duplicateMessage) {
+                            if ($value && PpdbRegistration::where('nik', $value)->exists()) {
+                                $fail($duplicateMessage);
+
+                                return;
+                            }
                             $tgl = $request->input('tanggal_lahir');
                             if (! $value || ! $tgl) {
                                 return;
@@ -86,8 +127,6 @@ class PpdbController extends Controller
                     'email' => 'nullable|email|max:100',
                     'asal_sekolah' => 'required|string|max:100',
                     'asal_smp_kategori' => 'required|in:ypsb,suster,umum',
-                    'tahun_lulus' => 'nullable|string|max:4',
-                    'rata_rata_rapor' => 'nullable|numeric|min:0|max:100',
                     'jalur' => 'required|in:reguler,prestasi,afirmasi',
                     'gelombang' => 'required|in:1,2',
                     'skema_bayar' => 'required|in:lunas,angsuran',
@@ -102,6 +141,7 @@ class PpdbController extends Controller
                     'nama_ibu' => 'nullable|string|max:100',
                     'pekerjaan_ibu' => 'nullable|string|max:50',
                     'no_hp_ortu' => ['nullable', 'string', 'max:20', 'regex:/^[0-9+\-\s]{9,20}$/'],
+                    'email' => 'nullable|email|max:100',
                 ]);
                 $saved['step2'] = $validated;
                 break;
@@ -131,11 +171,11 @@ class PpdbController extends Controller
                 if ($request->hasFile('file_bukti_transfer')) {
                     $saved['step4']['file_bukti_transfer'] = $request->file('file_bukti_transfer')->store('ppdb_temp', 'public');
                 }
-                $saved['step4']['nominal_transfer'] = $validated['nominal_transfer'] ?? null;
+                $saved['step4']['nominal_bayar'] = $validated['nominal_transfer'] ?? null;
                 break;
         }
 
-        session(['ppdb_form' => $saved]);
+        $this->saveDraftPayload($saved);
 
         if ($step < 4) {
             return redirect()->route('ppdb.daftar', ['step' => $step + 1])
@@ -147,7 +187,7 @@ class PpdbController extends Controller
 
     public function daftarSubmitForm()
     {
-        $saved = session('ppdb_form', []);
+        $saved = $this->draftPayload();
         if (empty($saved)) {
             return redirect()->route('ppdb.daftar', ['step' => 1]);
         }
@@ -157,7 +197,18 @@ class PpdbController extends Controller
 
     public function daftarSubmit(Request $request)
     {
-        $saved = session('ppdb_form', []);
+        $user = Auth::user();
+        if ($user && ! $user->isPpdbAdmin()) {
+            $existing = PpdbRegistration::where('user_id', $user->id)->first();
+            if ($existing) {
+                $request->session()->put('ppdb_last_no', $existing->no_pendaftaran);
+
+                return redirect()->route('ppdb.sukses', $existing->no_pendaftaran)
+                    ->with('success', 'Anda sudah memiliki pendaftaran.');
+            }
+        }
+
+        $saved = $this->draftPayload();
         if (empty($saved)) {
             return redirect()->route('ppdb.daftar', ['step' => 1]);
         }
@@ -168,33 +219,38 @@ class PpdbController extends Controller
 
         $data = array_merge($step1, $step2, [
             'nama_bank' => 'BNI-6617710032-YPSB-SMA-STO-PAULUS',
-            'nominal_transfer' => $step4['nominal_transfer'] ?? null,
+            'nominal_bayar' => $step4['nominal_bayar'] ?? ($step4['nominal_transfer'] ?? null),
             'status' => 'pending',
+            'user_id' => Auth::id(),
         ]);
 
-        foreach (['file_kk', 'file_akta', 'file_ktp_ortu', 'file_baptis', 'file_rapor_8_ganjil', 'file_rapor_8_genap', 'file_foto', 'file_bukti_transfer'] as $field) {
+        foreach (['file_kk', 'file_akta', 'file_ktp_ortu', 'file_baptis', 'file_rapor_8_ganjil', 'file_rapor_8_genap', 'file_foto'] as $field) {
             if (! empty($saved['step3'][$field] ?? null)) {
                 $data[$field] = $saved['step3'][$field];
             }
-            if (! empty($saved['step4']['file_bukti_transfer'] ?? null) && $field === 'file_bukti_transfer') {
-                $data[$field] = $saved['step4']['file_bukti_transfer'];
-            }
+        }
+        if (! empty($saved['step4']['file_bukti_transfer'] ?? null)) {
+            $data['file_bukti_transfer'] = $saved['step4']['file_bukti_transfer'];
         }
 
-        // Pindah file dari ppdb_temp ke ppdb permanen
-        foreach ($data as $key => $val) {
-            if (is_string($val) && str_starts_with($val, 'ppdb_temp/')) {
-                $data[$key] = Storage::disk('public')->move($val, str_replace('ppdb_temp/', 'ppdb/', $val));
-            }
-        }
-
-        $data['no_pendaftaran'] = PpdbRegistration::generateNoPendaftaran();
-
+        $moved = [];
         try {
-            $pendaftaran = DB::transaction(function () use ($data) {
+            foreach ($data as $key => $val) {
+                if (is_string($val) && str_starts_with($val, 'ppdb_temp/')) {
+                    $dest = str_replace('ppdb_temp/', 'ppdb/', $val);
+                    if (! Storage::disk('public')->move($val, $dest)) {
+                        throw new \RuntimeException('Gagal memindahkan berkas pendaftaran.');
+                    }
+                    $data[$key] = $dest;
+                    $moved[] = $dest;
+                }
+            }
+
+            $pendaftaran = DB::transaction(function () use (&$data) {
                 $attempt = 0;
                 while (true) {
                     $attempt++;
+                    $data['no_pendaftaran'] = PpdbRegistration::generateNoPendaftaran();
                     try {
                         return PpdbRegistration::create($data);
                     } catch (QueryException $e) {
@@ -206,19 +262,32 @@ class PpdbController extends Controller
                 }
             });
         } catch (QueryException $e) {
+            if ($moved !== []) {
+                Storage::disk('public')->delete($moved);
+            }
             $msg = strtolower($e->getMessage());
             if (str_contains($msg, 'no_pendaftaran')) {
                 throw $e;
             }
-            if (str_contains($msg, 'nisn')) {
-                return back()->withErrors(['nisn' => 'NIK atau NISN Anda sudah terdaftar, Mohon untuk diperiksa kembali'])->withInput();
-            }
-            if (str_contains($msg, 'nik')) {
-                return back()->withErrors(['nik' => 'NIK atau NISN Anda sudah terdaftar, Mohon untuk diperiksa kembali'])->withInput();
+            if (str_contains($msg, 'nisn') || str_contains($msg, 'nik')) {
+                $field = str_contains($msg, 'nisn') ? 'nisn' : 'nik';
+
+                return redirect()->route('ppdb.daftar', ['step' => 1])
+                    ->withErrors([$field => 'NIK atau NISN Anda sudah terdaftar, Mohon untuk diperiksa kembali'])
+                    ->withInput();
             }
             throw $e;
+        } catch (\RuntimeException $e) {
+            if ($moved !== []) {
+                Storage::disk('public')->delete($moved);
+            }
+
+            return redirect()->route('ppdb.daftar', ['step' => 4])->withErrors(['file_bukti_transfer' => $e->getMessage()]);
         }
 
+        if (Auth::id()) {
+            PpdbDraft::where('user_id', Auth::id())->delete();
+        }
         session()->forget('ppdb_form');
         $request->session()->put('ppdb_last_no', $pendaftaran->no_pendaftaran);
 
@@ -302,7 +371,7 @@ class PpdbController extends Controller
             return false;
         }
 
-        $allowed = array_filter(array_map('trim', explode(',', (string) env('PPDB_ADMIN_EMAILS', 'admin@smasantopaulus.sch.id'))));
+        $allowed = array_filter(array_map('trim', explode(',', (string) config('ppdb.admin_emails', 'admin@smasantopaulus.sch.id'))));
 
         return in_array($user->email, $allowed, true);
     }

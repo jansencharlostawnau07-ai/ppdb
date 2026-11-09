@@ -22,6 +22,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'google_id',
+        'avatar',
+        'role',
     ];
 
     /**
@@ -45,5 +48,22 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function ppdbDraft()
+    {
+        return $this->hasOne(\App\Models\PpdbDraft::class);
+    }
+
+    public function ppdbRegistration()
+    {
+        return $this->hasOne(\App\Models\PpdbRegistration::class);
+    }
+
+    public function isPpdbAdmin(): bool
+    {
+        $allowed = array_filter(array_map('trim', explode(',', (string) config('ppdb.admin_emails', 'admin@smasantopaulus.sch.id'))));
+
+        return in_array($this->email, $allowed, true);
     }
 }

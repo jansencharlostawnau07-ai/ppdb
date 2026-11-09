@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminPpdbController;
+use App\Http\Controllers\ApplicantAuthController;
 use App\Http\Controllers\PpdbController;
 use Illuminate\Support\Facades\Route;
 
@@ -40,8 +41,18 @@ Route::middleware(['auth', 'ppdb.admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/logout', [AdminPpdbController::class, 'logout'])->name('logout');
 });
 
-// PPDB Publik — Multi-step form dengan sesi per halaman
-Route::get('/daftar/{step?}', [PpdbController::class, 'daftarStep'])->name('ppdb.daftar');
-Route::post('/daftar/{step}', [PpdbController::class, 'daftarStoreStep'])->name('ppdb.daftar.step');
-Route::post('/daftar/submit', [PpdbController::class, 'daftarSubmit'])->name('ppdb.daftar.submit');
-Route::get('/daftar/submit', [PpdbController::class, 'daftarSubmitForm'])->name('ppdb.daftar.submit.form');
+// Auth pendaftar (Google)
+Route::get('/masuk', [ApplicantAuthController::class, 'loginForm'])->name('ppdb.login');
+Route::get('/auth/google/pendaftar', [ApplicantAuthController::class, 'redirectToGoogle'])->name('ppdb.auth.google');
+Route::get('/auth/google/pendaftar/callback', [ApplicantAuthController::class, 'handleGoogleCallback'])->name('ppdb.auth.google.callback');
+Route::post('/keluar', [ApplicantAuthController::class, 'logout'])->middleware('auth')->name('ppdb.logout');
+
+// PPDB Publik — Multi-step form (wajib "Google" di awal; pura-pura/demo jika OAuth belum dikonfigurasi)
+Route::middleware(['auth', 'ppdb.applicant'])->group(function () {
+    Route::get('/daftar/submit', [PpdbController::class, 'daftarSubmitForm'])->name('ppdb.daftar.submit.form');
+    Route::post('/daftar/submit', [PpdbController::class, 'daftarSubmit'])->name('ppdb.daftar.submit');
+    Route::get('/daftar/{step?}', [PpdbController::class, 'daftarStep'])->where('step', '[1-4]')->name('ppdb.daftar');
+    Route::post('/daftar/{step}', [PpdbController::class, 'daftarStoreStep'])->where('step', '[1-4]')->name('ppdb.daftar.step');
+});
+
+

@@ -54,7 +54,7 @@
 <div><label class="font-semibold">Nama Ibu</label><input name="nama_ibu" value="{{ old('nama_ibu', $saved['step2']['nama_ibu'] ?? '') }}" class="w-full border rounded px-3 py-2"></div>
 <div><label class="font-semibold">Pekerjaan Ibu</label><input name="pekerjaan_ibu" value="{{ old('pekerjaan_ibu', $saved['step2']['pekerjaan_ibu'] ?? '') }}" class="w-full border rounded px-3 py-2"></div>
 <div><label class="font-semibold">No. HP Ortu</label><input name="no_hp_ortu" value="{{ old('no_hp_ortu', $saved['step2']['no_hp_ortu'] ?? '') }}" class="w-full border rounded px-3 py-2"></div>
-<div><label class="font-semibold">Email</label><input type="email" name="email" value="{{ old('email', $saved['step2']['email'] ?? '') }}" class="w-full border rounded px-3 py-2"></div>
+<div><label class="font-semibold">Email</label><input type="email" name="email" value="{{ old('email', $saved['step2']['email'] ?? $saved['step1']['email'] ?? auth()->user()->email ?? '') }}" class="w-full border rounded px-3 py-2"></div>
 </div>
 
 @elseif($step === 3)
@@ -72,7 +72,7 @@
 <div class="md:col-span-2 font-bold text-navy-900 border-b pb-1">Step 4 — Bukti Pembayaran</div>
 <p class="text-xs bg-blue-50 border border-blue-200 rounded p-2">Transfer ke <b>BNI 6617710032 a.n. YPSB SMA STO PAULUS</b>. Pastikan nama penerima benar, lalu unggah bukti + isi nominal. Konfirmasi ke WA resmi panitia.</p>
 <div><label class="font-semibold">Bukti Transfer (JPG/PDF)</label><input type="file" name="file_bukti_transfer" class="w-full border rounded px-3 py-2"></div>
-<div><label class="font-semibold">Nominal Transfer (Rp)</label><input type="number" name="nominal_transfer" value="{{ old('nominal_transfer', $saved['step4']['nominal_transfer'] ?? '') }}" class="w-full border rounded px-3 py-2"></div>
+<div><label class="font-semibold">Nominal Transfer (Rp)</label><input type="number" name="nominal_transfer" value="{{ old('nominal_transfer', $saved['step4']['nominal_bayar'] ?? $saved['step4']['nominal_transfer'] ?? '') }}" class="w-full border rounded px-3 py-2"></div>
 <p class="text-xs bg-amber-50 border rounded p-2">Non-Katolik wajib Surat Pernyataan (diunggah di kolom Baptis).</p>
 </div>
 @endif

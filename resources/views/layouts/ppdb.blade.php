@@ -48,10 +48,15 @@ body{font-family:'Plus Jakarta Sans',system-ui,sans-serif}
 <a href="{{ route('ppdb.biaya') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->routeIs('ppdb.biaya') ? 'bg-slate-200 underline underline-offset-4 decoration-amber-500 decoration-2' : '' }}">Biaya</a>
 <a href="{{ route('ppdb.beasiswa') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->routeIs('ppdb.beasiswa') ? 'bg-slate-200 underline underline-offset-4 decoration-amber-500 decoration-2' : '' }}">Beasiswa</a>
 @auth
+@if(auth()->user()->isPpdbAdmin())
 <a href="{{ route('admin.dashboard') }}" class="px-3 py-2 rounded-lg bg-green-100 text-green-800 {{ request()->routeIs('admin.*') ? 'underline underline-offset-4 decoration-green-600 decoration-2' : '' }}">Dashboard Admin</a>
 <form method="POST" action="{{ route('admin.logout') }}" class="inline">@csrf<button class="px-3 py-2 rounded-lg bg-red-100 text-red-700">Logout</button></form>
 @else
-<a href="{{ route('ppdb.daftar') }}" class="px-4 py-2 rounded-lg text-white shadow {{ request()->routeIs('ppdb.daftar','ppdb.store','ppdb.sukses') ? 'bg-amber-500' : 'bg-navy-900 hover:bg-navy-800' }}">Daftar</a>
+<a href="{{ route('ppdb.daftar') }}" class="px-4 py-2 rounded-lg text-white shadow {{ request()->routeIs('ppdb.daftar','ppdb.daftar.*') ? 'bg-amber-500' : 'bg-navy-900 hover:bg-navy-800' }}">Lanjutkan Daftar</a>
+<form method="POST" action="{{ route('ppdb.logout') }}" class="inline">@csrf<button class="px-3 py-2 rounded-lg bg-red-100 text-red-700">Keluar</button></form>
+@endif
+@else
+<a href="{{ route('ppdb.login') }}" class="px-4 py-2 rounded-lg text-white shadow {{ request()->routeIs('ppdb.login','ppdb.daftar*') ? 'bg-amber-500' : 'bg-navy-900 hover:bg-navy-800' }}">Masuk &amp; Daftar</a>
 <a href="{{ route('ppdb.cek.form') }}" class="px-3 py-2 rounded-lg hover:bg-slate-100 {{ request()->routeIs('ppdb.cek.*') ? 'bg-slate-200 underline underline-offset-4 decoration-amber-500 decoration-2' : '' }}">Cek Status</a>
 @endauth
 </nav>

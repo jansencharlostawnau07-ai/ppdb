@@ -12,7 +12,7 @@ class EnsurePpdbAdmin
     {
         $user = Auth::user();
 
-        $allowed = array_filter(array_map('trim', explode(',', (string) env('PPDB_ADMIN_EMAILS', 'admin@smasantopaulus.sch.id'))));
+        $allowed = array_filter(array_map('trim', explode(',', (string) config('ppdb.admin_emails', 'admin@smasantopaulus.sch.id'))));
 
         if (! $user || ! in_array($user->email, $allowed, true)) {
             Auth::logout();

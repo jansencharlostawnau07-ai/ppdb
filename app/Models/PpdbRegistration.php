@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class PpdbRegistration extends Model
 {
     protected $fillable = [
+        'user_id',
         'no_pendaftaran',
         'nama_lengkap', 'nisn', 'nik', 'jenis_kelamin',
         'tempat_lahir', 'tanggal_lahir', 'agama',
@@ -29,5 +30,10 @@ class PpdbRegistration extends Model
         $year = date('Y');
         $count = (int) static::whereYear('created_at', $year)->count() + 1;
         return sprintf('PPDB-%s-%04d', $year, $count);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

@@ -58,16 +58,21 @@ class AdminPpdbController extends Controller
 
             $email = $googleUser->getEmail();
             $name = $googleUser->getName() ?? $email;
+            $allowed = array_filter(array_map('trim', explode(',', (string) config('ppdb.admin_emails', 'admin@smasantopaulus.sch.id'))));
 
-            // Cari atau buat user admin dari email Google
-            $user = User::where('email', $email)->first();
-            if (! $user) {
-                $user = User::create([
-                    'name' => $name,
-                    'email' => $email,
-                    'password' => Hash::make(Str::random(24)),
-                    'email_verified_at' => now(),
-                ]);
+            if (! $email || ! in_array($email, $allowed, true)) {
+                return redirect()->route('admin.login')->withErrors(['email' => 'Akun ini tidak memiliki akses admin PPDB.']);
+            }
+
+            $user = User::firstOrCreate(
+                ['email' => $email],
+                ['name' => $name, 'password' => Hash::make(Str::random(24))]
+            );
+            if (! $user->email_verified_at) {
+                $user->forceFill(['email_verified_at' => now()])->save();
+            }
+            if ($user->name !== $name && $name) {
+                $user->forceFill(['name' => $name])->save();
             }
 
             Auth::login($user, true);
@@ -75,7 +80,7 @@ class AdminPpdbController extends Controller
 
             return redirect()->route('admin.dashboard');
         } catch (\Exception $e) {
-            return back()->withErrors(['google' => 'Login Google gagal. Silakan coba lagi.']);
+            return redirect()->route('admin.login')->withErrors(['google' => 'Login Google gagal. Silakan coba lagi.']);
         }
     }
 
