@@ -22,11 +22,6 @@ class PpdbController extends Controller
         return view('ppdb.home', compact('stats'));
     }
 
-    public function create()
-    {
-        return redirect()->route('ppdb.daftar', ['step' => 1]);
-    }
-
     public function daftarStep(Request $request, $step = 1)
     {
         $step = (int) $step;

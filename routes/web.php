@@ -9,9 +9,6 @@ Route::get('/', [PpdbController::class, 'index'])->name('ppdb.home');
 Route::get('/biaya', [PpdbController::class, 'biaya'])->name('ppdb.biaya');
 Route::get('/beasiswa', [PpdbController::class, 'beasiswa'])->name('ppdb.beasiswa');
 Route::get('/panduan', [PpdbController::class, 'panduan'])->name('ppdb.panduan');
-Route::get('/daftar', [PpdbController::class, 'create'])->name('ppdb.daftar');
-Route::post('/daftar', [PpdbController::class, 'store'])
-    ->middleware('throttle:10,1')->name('ppdb.store');
 Route::get('/sukses/{no}', [PpdbController::class, 'sukses'])
     ->middleware('throttle:60,1')->name('ppdb.sukses');
 Route::get('/kartu/{no}', [PpdbController::class, 'kartu'])
