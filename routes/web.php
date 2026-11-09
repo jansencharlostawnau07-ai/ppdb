@@ -44,3 +44,4 @@ Route::middleware(['auth', 'ppdb.admin'])->prefix('admin')->name('admin.')->grou
 Route::get('/daftar/{step?}', [PpdbController::class, 'daftarStep'])->name('ppdb.daftar');
 Route::post('/daftar/{step}', [PpdbController::class, 'daftarStoreStep'])->name('ppdb.daftar.step');
 Route::post('/daftar/submit', [PpdbController::class, 'daftarSubmit'])->name('ppdb.daftar.submit');
+Route::get('/daftar/submit', [PpdbController::class, 'daftarSubmitForm'])->name('ppdb.daftar.submit.form');
